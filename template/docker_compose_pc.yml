@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mysql:
+    image: "mysql:5.5"
+    restart: "always"
+    container_name: "${SYSNAME}_mysql"
+    volumes:
+      - ${ROOTFS_DATA}:/data     
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_USER=${SYSNAME}
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${SYSNAME}
+
+  web:
+    build: template/build
+    restart: "always"
+    container_name: "${SYSNAME}"
+    command: "npm start"
+    volumes:
+      - ${ROOTFS_DATA}/:/data      
+      - .:/web
+    links:
+      - mysql
+    ports:
+      - "443:443" 
