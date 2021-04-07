@@ -15,6 +15,7 @@ echo "Hardware Type: "$hw_type
 # Check the Software dependency
 # 1. softwares: docker-ce, docker-compose(at least v2)
 # 2. docker container: mysql:5.5, node:9.11
+echo "Software dependency check..."
 
 VerDocker=$(docker -v 2>&1)
 VerDockerSub=$(echo $VerDocker | sed 's/[^0-9]*\([0-9\.]*\).*/\1/' | cut -d \. -f 1)
@@ -78,6 +79,7 @@ fi
 
 # Prepare files and directories needed for runtime
 # 1. Check if the default environment variables file of docker-compose (docker_compose_env) is exist?
+echo "Runtime files & directories check..."
 
 g_envfile="docker_compose_env"
 if [ ! -f $g_envfile ]; then
@@ -87,11 +89,11 @@ if [ ! -f $g_envfile ]; then
 fi
 
 # 1.1 Verify that the path is valid
-datadir_str=$(cat $g_envfile | grep "ROOTFS_DATA=" | sed 's/\xd//')
-datadir=${datadir_str:12}
+datadir_str=$(cat $g_envfile | grep "DATA_PATH=" | sed 's/\xd//')
+datadir=${datadir_str:10}
 if [ ! -d "$datadir" ]; then 
     echo "ERROR: $datadir not exist!"
-    echo "  ROOTFS_DATA in $g_envfile."
+    echo "  DATA_PATH in $g_envfile."
     exit
 fi
 echo "Data Path: $datadir"
@@ -106,34 +108,39 @@ cp -fv template/docker_compose_${hw_type}.yml  docker-compose.yml
 
 
 # Procedures
+echo "Procedure starting..."
 
 if [ "$g_mode" == "uninstall" ]; then
     # Uninstall
     docker-compose -p winfo --env-file $g_envfile down
     rm -fv index.js
-    echo "Uninstall Successfull!"
+    echo "Uninstall Complete!"
 else
     # Install
     sysname_str=$(cat $g_envfile | grep "SYSNAME=" | sed 's/\xd//')
     sysname=${sysname_str:8}
+    echo "Web Container: "$sysname
 
     # 1. re-construct( delete & create) container
     docker-compose -p winfo --env-file $g_envfile down
     docker-compose -p winfo --env-file $g_envfile up -d
 
-    # 2. install npm packages
-    # 3. patch for npm packages
-
-    # 4. update index.js
+    # 2. update index.js
     if [ "$g_mode" == "debug" ]; then
         cp -fv template/index.js index.js
     else
         cp -fv apps.js index.js
     fi
 
-    # 5. restart containers (web & mysql)
+    # 3. restart containers (web & mysql)
     docker restart $sysname"_mysql"
     docker restart $sysname
+
+    # 4. install npm packages
+    docker exec $sysname /usr/local/bin/npm install
+
+    # 5. patch for npm packages
+    echo "Install Complete!"
 fi
 
 rm -fv docker-compose.yml
