@@ -7,11 +7,12 @@
     <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
     <!-- Custom Declaration -->
     <title><%=title%></title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
     <script src="/view/js/index.js" type="text/javascript"></script>
 </head>
-<body ng-app="indexApp">
+<body ng-app="appApp">
     <div ng-include="'/view/header.html'"></div>
-    <div id="wrapper" class="container-fluid" ng-controller="indexCtrl">
+    <div id="wrapper" class="container-fluid" ng-controller="appCtrl">
         index<br />
         updateAt: <%=updateAt%>
     </div>

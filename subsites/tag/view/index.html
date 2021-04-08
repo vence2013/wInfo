@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+    <!-- font-awesome -->
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />  
+    
+    <!-- Custom Declaration -->
+    <title>标签管理</title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <link  href="/tag/view/css/index.css" rel="stylesheet" />
+    <script src="/tag/view/js/index.js" type="text/javascript"></script>    
+</head>
+<body ng-app="appApp" ng-controller="appCtrl">
+
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid">
+        <div class="row tag-view">
+            <div class="col mt-2">
+                <div class="filter_card mb-2">
+                    <div class="row">
+                        <div class="col input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">名称搜索</span>
+                            </div>
+                            <input type="text" class="form-control" ng-model="opts.str">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">日期范围</span>
+                            </div>
+                            <input type="text" class="form-control text-center" placeholder="Start, eg. 2021-4-8" />
+                            <input type="text" class="form-control text-center" placeholder="End" />
+                        </div>
+                    </div>                    
+                    <div class="row mt-2">
+                        <div class="col input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">关联文档</span>
+                            </div>
+                            <input type="text" class="form-control text-center" placeholder="min" />
+                            <input type="text" class="form-control text-center" placeholder="max" />
+                        </div>
+                        <div class="col input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">关联文件</span>
+                            </div>
+                            <input type="text" class="form-control text-center" placeholder="min" />
+                            <input type="text" class="form-control text-center" placeholder="max" />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col"></div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-outline-danger btn-block">Delete Selected</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tag_info" ng-repeat="x in taglist">
+                    <div>
+                        <span class="name">{{x.name}}</span>
+                        <span class="date">{{x.createdAt|limitTo:10}}</span>
+                    </div>
+                    <div class="relate">
+                        <span class="title">doc:</span> <span class="info">0</span>
+                        <span class="title">file:</span> <span class="info">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--- 分页信息开始 --->
+            <div class="col-md page">
+                <div class="pagelist">
+                    <nav>
+                        <ul class="pagination">
+                            <li ng-repeat="x in page.list" class="page-item"
+                                ng-class="{'disabled': x.disable, 'active':x.active}" 
+                                ng-click="opts.page=x.page">
+                                    <a class="page-link" href="#">{{x.name}}</a>
+                            </li>
+                            <li class="page-item">
+                                <input class="page-link" type="text" placeholder="跳转页码" title="回车跳转" 
+                                    ng-model="pageGoto" ng-keydown="$event.keyCode == 13 && pageJump()" />
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="pageinfo">
+                    <span>当前在第<b>{{page.cur}}</b>页</span>                        
+                    <span>每页<b>{{page.size}}</b>条</span>
+                    <span>共<b>{{page.max}}</b>页</span>
+                    <span>共<b>{{page.total}}</b>条</span>
+                </div>
+            </div>
+            <!--- 分页信息结束 --->
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 angular
-.module('indexApp', [])
-.controller('indexCtrl', indexCtrl)
+.module('appApp', [])
+.controller('appCtrl', appCtrl)
 
-function indexCtrl($scope) {
+function appCtrl($scope) {
 }
