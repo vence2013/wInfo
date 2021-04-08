@@ -1,0 +1,17 @@
+.tagrelate { height: 140px; }
+.tagunrelate { height: 470px; }
+
+#exportfiles { float: right; line-height: 30px; font-weight: bold; margin-top: 10px; }
+
+/* index */
+.data_preset { display: none; }
+
+/* 文档/文件列表 */
+.list { height: 768px; }
+.list>div { line-height: 30px; border-bottom: 1px dashed #cccccc; }
+.list>div>span { margin-left: 10px; color: #888888; font-style: italic; }
+.list>div>span>b { color: #000000; }
+.list>div>i, .list>div>a { cursor: pointer; margin-left: 10px; }
+
+/* display */
+.TOC { overflow: auto; }

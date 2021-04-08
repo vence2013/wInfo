@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+
+    <!-- editor.md -->
+    <link rel="stylesheet" href="/node_modules/editor.md/css/editormd.css" />    
+    <script type="text/javascript" src="/node_modules/editor.md/editormd.js"></script>
+
+    <!-- 自定义 -->
+    <title>文档编辑</title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <link  href="/document/view/css/index.css" rel="stylesheet" />
+    <script src="/document/view/js/edit.js" type="text/javascript"></script>    
+</head>
+<body ng-app="editApp">
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid" ng-controller="editCtrl" docid="<%=id%>">
+        <div class="row">
+            <!--- 侧栏开始 --->
+            <div class="col-md-4 mt-2 ml-2 rounded border border-secondary">  
+                <div class="row mt-3">
+                    <div class="col-md-3 pr-0">
+                        <button type="button" class="btn btn-lg btn-block btn-warning" ng-if="isEdit" ng-click="submit()">编辑</button>
+                        <button type="button" class="btn btn-lg btn-block btn-success" ng-if="!isEdit" ng-click="submit()">创建</button>
+                    </div>
+                    <div class="col-md-3 pr-0">
+                        <button type="button" class="btn btn-lg btn-block btn-danger" data-toggle="modal" data-target="#deleteWnd" ng-show="isEdit">删除</button>
+                    </div>
+                    <div class="col-md pt-3 text-right" ng-if="isEdit">
+                        {{docinfo.createdAt|limitTo:10}} / {{docinfo.updatedAt|limitTo:10}}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <input type="text" class="form-control form-control-lg" ng-model="tag_input" ng-trim="false" placeholder="tag">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md card card-body bg-light mx-3 py-2 px-1">
+                        <div class="tagrelate" title="已选择的有效标签">
+                            <div class="tag" ng-repeat="x in tag_input_valid" ng-click="tag_unselect(x);">{{x}}</div>
+                        </div>
+                        <hr />
+                        <div class="tagunrelate">
+                            <div class="tag" ng-repeat="x in tag_display" ng-click="tag_select(x);">{{x}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--- 侧栏结束 --->
+            <div class="col-md mt-2">
+                <div id="editormd" style="z-index: 1000;" ><textarea style="display:none;" ng-model="mdContent"></textarea></div>
+            </div>
+        </div>
+
+        <!-- 文档删除确认窗口 -->
+        <div id="deleteWnd" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold font-italic">文档删除确认</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        该操作将删除文档及其标签关联，确认删除吗？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger px-4" data-dismiss="modal" ng-click="delete();">删除</button>
+                        <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">取消</button>                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
