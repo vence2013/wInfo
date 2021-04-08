@@ -67,3 +67,17 @@ function errorCheck(response) {
     }
     return true;
 }
+
+function locals_write(key, value)
+{
+    var val = (typeof(value) == 'object') ? JSON.stringify(value) : value;
+    localStorage.setItem(key, val);
+}
+
+function locals_read(key, default_value)
+{
+    var ret = localStorage.getItem(key);
+    if (!ret) return (ret || default_value);
+
+    return JSON.parse(ret);
+}

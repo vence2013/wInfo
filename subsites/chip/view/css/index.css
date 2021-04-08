@@ -1,0 +1,55 @@
+.ititle { line-height: 30px; margin: 10px 0px 5px; text-indent: 10px; 
+    font-style: italic; font-weight: bold; border-bottom: 2px solid #888888; }
+.ilist>span { line-height: 16px; margin: 3px 5px 0px 0px; font-size: 12px; cursor: pointer; }
+.ilist>span>i { margin: 0px 5px; }
+
+a { line-height: 40px; font-style: italic; margin: 0px 10px; }
+
+
+/* 寄存器映射 ****************************************************************/
+
+.map_menu { position: fixed; top: 42px; right: 55px; background-color: #ffffff; z-index: 999; opacity: 0.9; }
+.map_menu>.menu_extend {  width: 800px; height: 730px; border-radius: 5px; border: 1px dashed #000000; padding: 0px 5px; opacity: 0.9; }
+
+.map_sidebar {
+    position: fixed; top: 0px; right: -58px;
+}
+.map_sidebar > div {
+    margin: 120px auto;
+    width: 169px;
+	font-size: 20px; 
+    line-height: 50px;
+    text-align: center;
+	transform:rotate(90deg);
+	-ms-transform:rotate(90deg); 	/* IE 9 */
+	-moz-transform:rotate(90deg); 	/* Firefox */
+    -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+    
+    background: #cccccc;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.map { text-align: center; }
+.map>div { display: inline; float: left; width: 100px; overflow: hidden; margin-left: 1px; background-color: #cccccc; }
+.map>div:first-child>div { font-style: italic; color: #666666; }
+.map>div>div { border-bottom: 1px dashed #ffffff; cursor: pointer; }
+.map>div>div:first-child { border-top: 1px solid #000000; line-height: 30px; background-color: #888888; 
+    font-weight: bold;  }
+.map>div>div:last-child { border-bottom: 1px solid #000000; }
+
+.map_bits_valid { background-color: #81BEF7; }
+.map_bits_select { background-color: #FE642E; }
+
+.map_info { display: none; background-color: #ffffff; border-top-right-radius: 5px; padding: 5px 10px; 
+    line-height: 25px; font-size: 14px; font-style: italic; }
+.map_info>div>span { margin-right: 20px; }
+.map_info>div:nth-child(1)>span:nth-child(1)>b { font-weight: bold; color: #FF0000; }
+.map_info>div:nth-child(2)>span>b { color: #045FB4; font-size: 16px; }
+.map_info>div:nth-child(3) { border-bottom: 1px dashed #cccccc; margin-bottom: 10px; }
+
+/* 功能编辑 */
+.tagrelate { height: 160px; }
+.tagunrelate { height: 430px; }
