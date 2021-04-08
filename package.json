@@ -19,8 +19,16 @@
   },
   "homepage": "https://github.com/vence2013/wInfo#readme",
   "dependencies": {
+    "angular": "^1.8.2",
+    "angular-clipboard": "^1.7.0",
+    "angular-file-upload": "^2.6.1",
+    "angular-tree-control": "^0.2.30",
+    "bootstrap": "^4.6.0",
     "dotenv": "^8.2.0",
+    "editor.md": "^1.5.0",
+    "font-awesome": "^4.7.0",
     "glob": "^7.1.6",
+    "jquery": "^3.6.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "koa-compose": "^4.1.0",
@@ -31,7 +39,9 @@
     "koa-static-server": "^1.5.2",
     "koa-views": "^7.0.1",
     "mysql2": "^2.0.1",
+    "popper.js": "^1.16.1",
     "sequelize": "^5.21.2",
+    "toastr": "^2.1.4",
     "underscore": "^1.12.1"
   }
 }
