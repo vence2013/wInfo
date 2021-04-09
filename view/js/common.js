@@ -68,16 +68,45 @@ function errorCheck(response) {
     return true;
 }
 
+
+/* 对树进行递归遍历。返回树形结构中的目录节点和所有节点列表。 
+ * 参数列表： 
+ *      data  - 树形的目录数据
+ *      depth - 当前递归的深度
+ *      limit - 层级小于该值的目录节点都将作为展开节点返回
+ * 返回值： { dir:x, list:x }
+ *      dir - 层级小于depth的目录节点， 用于展开列表
+ *      list- 整个树节点的列表， 可以用于计算节点数量、根据ID查找节点数据(类似本地数据库)。 * 
+ */
+function treeTravel(data, depth, limit) {
+    var dir2 = [], list2 = [];
+
+    list2 = list2.concat(data); // 将当前节点加入列表
+    for (var i=0; i<data.length; i++) {
+        // 如果当前子节点没有子节点，则进入下一节点处理。
+        if (!data[i]['children'] || !data[i]['children'].length) continue;
+        // 如果目录层级符合要求，则将当前节点加入目录节点。
+        if (depth<limit) { dir2.push(data[i]); }
+        var {dir, list} = treeTravel(data[i]['children'], depth+1, limit);
+        dir2 = dir2.concat(dir);
+        list2 = list2.concat(list);
+    }
+
+    return {'dir':dir2, 'list':list2};
+}
+
+
+/* 本地数据的存储和读取（localStorage）
+ */
 function locals_write(key, value)
 {
     var val = (typeof(value) == 'object') ? JSON.stringify(value) : value;
     localStorage.setItem(key, val);
 }
-
 function locals_read(key, default_value)
 {
     var ret = localStorage.getItem(key);
-    if (!ret) return (ret || default_value);
+    if (!ret || (ret == 'undefined')) return default_value;
 
     return JSON.parse(ret);
 }

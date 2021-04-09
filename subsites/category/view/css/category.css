@@ -1,3 +1,5 @@
 /* edit.html */
 .edit_card { position: fixed; top: 50px; right: 10px; width: 500px; border: 2px solid #cccccc; border-radius: 5px; padding: 10px; }
 .notify { font-size: 14px; font-style: italic; color: #888888; }
+
+.category_id { font-style: italic; color: #888888; }
