@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+    <!-- Bootstrap -->
+    <script src="/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- font-awesome -->
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />  
+    <!-- tree -->
+    <script type="text/javascript" src="/node_modules/angular-tree-control/angular-tree-control.js"></script>
+    <script type="text/javascript" src="/node_modules/angular-tree-control/context-menu.js"></script>
+
+    <!-- 自定义 -->
+    <title>目录资源</title>
+    <link href="/category/view/css/tree-control.css" rel="stylesheet" type="text/css">
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <link  href="/category/view/css/category.css" rel="stylesheet" />
+    <script src="/category/view/js/resource.js" type="text/javascript"></script>    
+</head>
+<body ng-app="resourceApp" ng-controller="resourceCtrl">
+
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid" ng-controller="resourceCtrl">
+        <div class="row">
+            <!--- 侧栏开始 --->
+            <div class="col-md-4 mt-2 ml-2 rounded border border-secondary">  
+                <div class="row" style="position:absolute; top: 10px; right: 15px; width: 450px;">
+                    <div class="col-md pr-0">
+                        <div class="relate float-right" ng-class="resource.link ? 'relate_true' : 'relate_false'" 
+                            ng-click="resource_link()" title="目录的资源关联状态">&nbsp;</div>
+                    </div>
+                    <div class="col-md-5 pr-0">
+                        <input class="form-control" type="text" ng-model="resource.str" placeholder="搜索字符串" />
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button" ng-click="resource.page=(resource.page>1)?(resource.page-1):1;">&lt;</button>
+                            </div>
+                            <input type="text" class="form-control text-center" ng-disabled="true" placeholder="" ng-model="resource.page" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" ng-click="resource.page=resource.page+1;">&gt;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 选项卡导航 -->
+                <ul class="nav nav-tabs mt-3" role="tablist" id="resourceTab">
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" role="tab" href="#document">Documents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" role="tab" href="#file">Files</a>
+                    </li>
+                </ul>
+
+                <!-- 选项卡内容 -->
+                <div class="tab-content pt-2">
+                    <div class="tab-pane active resource_list" role="tabpanel" id="document">
+                        <div ng-repeat="x in list_document" title="{{x.title}}" ng-mouseenter="rsel=x.id;" ng-mouseleave="rsel=null;">                            
+                            <a href="/document/display/{{x.id}}" target="_blank">{{x.title}}</a>
+                            <img src="images/selected.png" ng-click="resource_link_document(x.id);" ng-show="rsel==x.id" />
+                        </div>
+                    </div>
+                    <div class="tab-pane fade resource_list" role="tabpanel" id="file">
+                        <div ng-repeat="x in list_file" title="{{x.name}}" ng-mouseenter="rsel=x.id;" ng-mouseleave="rsel=null;">                            
+                            <a href="{{x.location}}" target="_blank">{{x.name|limitTo:80}}</a>
+                            <img src="images/selected.png" ng-click="resource_link_file(x.id);" ng-show="rsel==x.id" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--- 主栏结束 --->
+            <div class="col-md mt-2" style="overflow: auto;">
+                <treecontrol class="tree-classic" options="treeOptions" tree-model="treeView" 
+                    filter-expression="predicate" filter-comparator="comparator" 
+                    expanded-nodes="listExpand" selected-node="nodeSelected"
+                    on-selection="select(node, selected)" on-node-toggle="toggle(node, expanded)">
+                        <span>{{node.name}}</span>
+                </treecontrol>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

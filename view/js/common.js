@@ -107,6 +107,7 @@ function locals_read(key, default_value)
 {
     var ret = localStorage.getItem(key);
     if (!ret || (ret == 'undefined')) return default_value;
+    if ((ret[0] != '[') && (ret[0] != '{')) return ret;
 
     return JSON.parse(ret);
 }

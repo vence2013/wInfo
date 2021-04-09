@@ -3,3 +3,12 @@
 .notify { font-size: 14px; font-style: italic; color: #888888; }
 
 .category_id { font-style: italic; color: #888888; }
+
+/* resource.html */
+.resource_list { height: 768px; }
+.resource_list>div { height: 32px; line-height: 32px; border-bottom: 1px dashed #cccccc; overflow: hidden; }
+.resource_list>div>img { cursor: pointer; margin-left: 10px; }
+
+.relate { height: 32px; width: 32px; margin-top: 2px; cursor: pointer; }
+.relate_true { background: url(../images/relate.png) no-repeat; } 
+.relate_false { background: url(../images/unrelate.png) no-repeat; } 

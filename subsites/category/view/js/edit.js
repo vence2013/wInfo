@@ -26,7 +26,7 @@ function appCtrl($scope, $http)
             $scope.listRoot = $scope.listView = list;
 
             // 恢复展开节点
-            if (ids.length) {
+            if (ids && ids.length) {
                 let expand = [];
                 $scope.listView.map((x)=>{ 
                     if (ids.indexOf(x.id)!=-1) 
