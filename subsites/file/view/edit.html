@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+    <!-- font-awesome -->
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- angularjs clipboard -->
+    <script type="text/javascript" src="/node_modules/angular-clipboard/angular-clipboard.js"></script>
+
+    <!-- 自定义 -->
+    <title>文件编辑</title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <link  href="/file/view/css/index.css" rel="stylesheet" />
+    <script src="/file/view/js/edit.js" type="text/javascript"></script>    
+</head>
+<body ng-app="editApp">
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid" ng-controller="editCtrl">
+        <div class="row">
+            <!--- 侧栏开始 --->
+            <div class="col-md-4 mt-2 ml-2 rounded border border-secondary">  
+                <div class="row mt-3">
+                    <div class="col-md-8 pr-0">
+                        <input type="text" class="form-control" ng-model="opts.str" placeholder="文件名称，用空格分隔">
+                    </div>
+                    <div class="col-md">
+                        <input type="text" class="form-control" ng-model="opts.ext" placeholder="扩展名筛选，用空格分隔">
+                    </div>
+                </div>                
+                <div class="row mt-2">
+                    <div class="col-md pr-0">
+                        <input type="text" class="form-control" ng-model="opts.createget" placeholder="起始日期，" /> 
+                    </div>
+                    <div class="col-md">
+                        <input type="text" class="form-control" ng-model="opts.createlet" placeholder="如2019-11-05" /> 
+                    </div>
+                    <div class="col-md pr-0">
+                        <input type="text" class="form-control" ng-model="opts.sizeget" placeholder="最小文件大小，" /> 
+                    </div>
+                    <div class="col-md">
+                        <input type="text" class="form-control" ng-model="opts.sizelet" placeholder="单位MB，如0.5" /> 
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-8 pr-0">
+                        <input type="text" class="form-control" ng-model="tag_input" placeholder="标签，用空格分隔" /> 
+                    </div>
+                    <div class="col-md">
+                        <select class="form-control" ng-model="opts.order">
+                            <option value="4">创建时间-降序</option> 
+                            <option value="3">创建时间-升序</option>
+                            <option value="2">文件大小-降序</option>
+                            <option value="1">文件大小-升序</option>                               
+                        </select>
+                    </div>         
+                </div>
+                <div class="row mt-3" nv-file-drop="" uploader="uploader">
+                    <div class="col-md card card-body bg-light mx-3 p-0">
+                        <div class="tagrelate mt-2">
+                            <div class="tag" ng-repeat="x in tag_input_valid" ng-click="tag_unselect(x);">{{x}}</div>
+                        </div>
+                        <hr />
+                        <div class="tagunrelate" title="未选择文件时，选中标签筛选文件；否则，点击标签关联到选中文件">
+                            <div class="tag" ng-repeat="x in tag_display" ng-click="tag_select(x);">{{x}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--- 侧栏结束 --->
+            <div class="col-md mt-2">
+                <div class="file_list_container">
+                    <div class="item" ng-repeat="x in filelist" ng-mouseenter='fsel=x;' ng-mouseleave='fsel=null' 
+                        ng-class="{selitem:(fsel==x) || (delid==x.id)}">
+                        <div class="form-check" title="{{x.name}}">
+                            <input class="form-check-input file_checkbox" type="checkbox" value="">
+                            <a href="{{x.location}}" target="_blank">{{x.name}}</a>
+                        </div>
+                        <div class="info">
+                            <span>{{x.size/1024/1024|number:2 }}MB</span>
+                            <div title="点击标签，取消关联">
+                                <a ng-repeat="y in x.tags" href="#" ng-click="tag_unlink(y);">{{y}}</a>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+                <!--- 分页信息开始 --->
+                <div class="page">
+                    <div class="file_list_ops pt-2 mr-3">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input type="checkbox" class="custom-control-input" id="check_all" ng-model="check_all" ng-click="check_all_click()">
+                            <label class="custom-control-label" for="check_all">Select All</label>
+                        </div>
+                        <a href="#" data-toggle="modal" data-target="#deleteWnd" ng-click="file_remove();">删除</a>
+                    </div>
+                    <div class="pagelist">
+                        <nav>
+                            <ul class="pagination">
+                                <li ng-repeat="x in page.list" class="page-item"
+                                    ng-class="{'disabled': x.disable, 'active':x.active}" 
+                                    ng-click="opts.page=x.page">
+                                        <a class="page-link" href="#">{{x.name}}</a>
+                                </li>
+                                <li class="page-item">
+                                    <input class="page-link" type="text" placeholder="跳转" title="回车跳转" 
+                                        ng-model="pageGoto" ng-keydown="$event.keyCode == 13 && pageJump()" />
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="pageinfo">
+                        <span>第<b>{{page.cur}}</b>页</span>                        
+                        <span><b>{{page.size}}</b>条/页</span>
+                        <span>共<b>{{page.max}}</b>页</span>
+                        <span>共<b>{{page.total}}</b>条</span>
+                    </div>
+                </div>
+                <!--- 分页信息结束 --->
+            </div>
+        </div>
+
+        <!-- 选中标签删除确认窗口 -->
+        <div id="deleteWnd" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold font-italic">文件删除确认</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        该操作将删除文件，如果仍有文档引用该文件，将无效。确认删除吗？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger px-4" data-dismiss="modal" ng-click="delete();">删除</button>
+                        <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">取消</button>                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

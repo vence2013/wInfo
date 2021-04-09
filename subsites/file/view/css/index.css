@@ -1,0 +1,22 @@
+/* upload */
+.tagrelate { height: 140px; }
+.tagunrelate { height: 470px; }
+
+.file_list_container { height: 768px; }
+.file_list_container>.item>div:first-child,.file_list_container>.item>div:first-child>a { color: #045FB4 !important; font-weight: bold; border-bottom: 1px dashed #888888; }
+.file_list_container>.item>.info { text-indent: 20px; height: 20px; font-size: 12px; }
+.file_list_container>.item>.info>div { display: inline; float: right; }
+.file_list_container>.item>.info>div>span, .file_list_container>.item>.info>div>a { margin: 0px 5px; font-style: italic; color: #B43104; }
+
+/* edit */
+.file_list_container>.item>div:first-child>a:not(:first-child) { margin-left: 10px; }
+
+/* picture */
+.piclist>div { 
+    display: inline; float: left; width: 200px; height: 140px;
+    margin: 5px 2px 0px; padding: 2px; border: 1px dashed #cccccc;
+}
+.piclist>div>a>img { 
+    max-width: 100%; max-height: 100%; 
+    display: block; margin: auto;
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+    <!-- font-awesome -->
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="/node_modules/magnific-popup/dist/magnific-popup.css">
+    <script type="text/javascript" src="/node_modules/magnific-popup/dist/jquery.magnific-popup.js"></script>
+
+    <!-- 自定义 -->
+    <title>图片文件</title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <link  href="/file/view/css/index.css" rel="stylesheet" />
+    <script src="/file/view/js/picture.js" type="text/javascript"></script>    
+</head>
+<body ng-app="pictureApp" ng-controller="pictureCtrl">
+
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid">
+        <div class="row pic-view">
+            <div class="col-md piclist mt-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 pr-0 mt-2">
+                <input type="text" class="form-control" ng-model="opts.str" placeholder="文件名称搜索">
+            </div>
+            <div class="col-md-2 pr-0">
+                    <input type="text" class="form-control" ng-model="opts.ext" placeholder="扩展名筛选">
+            </div>
+            <div class="col-md-1 pr-0">    
+                <select class="form-control" ng-model="opts.order">
+                    <option value="4">创建时间-降序</option> 
+                    <option value="3">创建时间-升序</option>
+                    <option value="2">文件大小-降序</option>
+                    <option value="1">文件大小-升序</option>                               
+                </select>
+            </div>
+            <div class="col-md">
+                <div class="page">
+                    <div class="pagelist">
+                        <nav>
+                            <ul class="pagination">
+                                <li ng-repeat="x in page.list" class="page-item"
+                                    ng-class="{'disabled': x.disable, 'active':x.active}" 
+                                    ng-click="opts.page=x.page">
+                                        <a class="page-link" href="#">{{x.name}}</a>
+                                </li>
+                                <li class="page-item">
+                                    <input class="page-link" type="text" placeholder="跳转页码" title="回车跳转" 
+                                        ng-model="pageGoto" ng-keydown="$event.keyCode == 13 && pageJump()" />
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="pageinfo">
+                        <span>当前在第<b>{{page.cur}}</b>页</span>                        
+                        <span>每页<b>{{page.size}}</b>条</span>
+                        <span>共<b>{{page.max}}</b>页</span>
+                        <span>共<b>{{page.total}}</b>条</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
