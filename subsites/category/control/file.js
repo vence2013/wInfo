@@ -5,19 +5,14 @@
 exports.resource = async (ctx, categoryid, str, link, page, size) => {
     var sql, sqlCond = '';
 
-    if (str && str.length) {
+    if (str && str.length) 
         str.map((x)=>{ sqlCond += " AND `name` LIKE '%"+x+"%' " });
-    }
     if (link && categoryid) /* belong a category */
-    {
         sqlCond += " AND `id` IN (SELECT `FileId` FROM `CategoryFile` WHERE `CategoryId`='"+categoryid+"') ";
-    }
     else if (categoryid) /* not belong a category */
-    {
         sqlCond += " AND `id` NOT IN (SELECT `FileId` FROM `CategoryFile` WHERE `CategoryId`='"+categoryid+"') ";
-    }
+    sqlCond += " AND `id` IN (SELECT `FileId` FROM `TagFile`) ";
     sqlCond = sqlCond ? " WHERE "+sqlCond.substr(4) : "";
-
 
     // 计算分页数据
     sql = "SELECT COUNT(*) AS num FROM `Documents` "+sqlCond;
