@@ -82,7 +82,7 @@ function treeTravel(data, depth, limit) {
     var dir2 = [], list2 = [];
 
     list2 = list2.concat(data); // 将当前节点加入列表
-    for (var i=0; i<data.length; i++) {
+    for (var i=0; data && (i<data.length); i++) {
         // 如果当前子节点没有子节点，则进入下一节点处理。
         if (!data[i]['children'] || !data[i]['children'].length) continue;
         // 如果目录层级符合要求，则将当前节点加入目录节点。

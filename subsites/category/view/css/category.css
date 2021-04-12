@@ -12,3 +12,11 @@
 .relate { height: 32px; width: 32px; margin-top: 2px; cursor: pointer; }
 .relate_true { background: url(../images/relate.png) no-repeat; } 
 .relate_false { background: url(../images/unrelate.png) no-repeat; } 
+
+
+/* index */
+.category_card { 
+    position: fixed; right: 20px; top: 60px; 
+    width: 600px; padding: 7px; background-color: #dddddd; 
+    z-index: 999; opacity: 0.5;
+}

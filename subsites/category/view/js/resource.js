@@ -17,7 +17,7 @@ function resourceCtrl($scope, $http, $timeout)
     function refresh(expand_ids) {
         let ids = expand_ids ? expand_ids : locals_read('/category/res/expand');
 
-        $http.get('/category/expand', {params:{'expand_ids':ids}}).then((res)=>{
+        $http.get('/category/expand/node', {params:{'expand_ids':ids}}).then((res)=>{
             if (errorCheck(res)) return ;
 
             let ret = res.data.message;
