@@ -79,7 +79,8 @@ function indexCtrl($scope, $http)
     var cfg_file_list_max = 18;
 
     $scope.opts = opts = {'str':'', 'ext':'', 'createget':'', 'createlet':'', 
-        'sizeget':'', 'sizelet':'', 'order':'4', 'page':1, 'pageSize':cfg_file_list_max, 'tag':$scope.tag_input_valid};
+        'sizeget':'', 'sizelet':'', 'order':'4', 'page':1, 'pageSize':cfg_file_list_max, 
+        'with_tag': true, 'tag':$scope.tag_input_valid};
     $scope.page = pageSet(0, opts.pageSize, 10, 0);
     $scope.filelist = [];
 

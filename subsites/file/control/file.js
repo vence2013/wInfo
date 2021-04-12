@@ -107,6 +107,8 @@ exports.search = async (ctx, query, page, pageSize) =>
         sqlCond += " AND `createdAt`>='"+query.createget+"' "; 
     if (query.createlet)
         sqlCond += " AND `createdAt`<='"+query.createlet+"' ";
+    if (query.with_tag)
+        sqlCond += " AND `id` IN (SELECT `FileId` FROM `TagFile`) ";
     sqlCond = sqlCond ? " WHERE "+sqlCond.substr(4) : '';
 
     if (query.tag)
@@ -125,6 +127,7 @@ exports.search = async (ctx, query, page, pageSize) =>
 
     // 计算分页数据
     sql = "SELECT COUNT(*) AS num FROM `Files` "+sqlCond;
+    console.log(sql);
     var [res, meta] = await ctx.sequelize.query(sql, {logging: false});
     var total = res[0]['num'];
     var maxpage  = Math.ceil(total/pageSize);
@@ -134,7 +137,7 @@ exports.search = async (ctx, query, page, pageSize) =>
     // 查询当前分页的列表数据
     var offset = (page - 1) * pageSize;
     sql = "SELECT * FROM `Files` "+sqlCond+" ORDER BY "+query.order.join(' ')+" LIMIT "+offset+", "+pageSize+" ;";
-    var [res, meta] = await ctx.sequelize.query(sql, {logging: false});
+    var [res, meta] = await ctx.sequelize.query(sql, {logging: true});
 
     return {'total':total, 'page':page, 'list':res};
 }

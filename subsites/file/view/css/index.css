@@ -3,7 +3,7 @@
 .tagunrelate { height: 470px; }
 
 .file_list_container { height: 768px; }
-.file_list_container>.item>div:first-child,.file_list_container>.item>div:first-child>a { color: #045FB4 !important; font-weight: bold; border-bottom: 1px dashed #888888; }
+.file_list_container>.item>div:first-child { color: #045FB4 !important; font-weight: bold; border-bottom: 1px dashed #888888; }
 .file_list_container>.item>.info { text-indent: 20px; height: 20px; font-size: 12px; }
 .file_list_container>.item>.info>div { display: inline; float: right; }
 .file_list_container>.item>.info>div>span, .file_list_container>.item>.info>div>a { margin: 0px 5px; font-style: italic; color: #B43104; }

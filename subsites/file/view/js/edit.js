@@ -124,7 +124,8 @@ function editCtrl($scope, $http, $timeout)
     var cfg_file_list_max = 18;
 
     $scope.opts = opts = {'str':'', 'ext':'', 'createget':'', 'createlet':'', 
-        'sizeget':'', 'sizelet':'', 'order':'4', 'page':1, 'pageSize':cfg_file_list_max, 'tag':$scope.tag_input_valid};
+        'sizeget':'', 'sizelet':'', 'order':'4', 'page':1, 'pageSize':cfg_file_list_max, 
+        'with_tag': true, 'tag':$scope.tag_input_valid};
     $scope.page = pageSet(0, opts.pageSize, 10, 0);
     $scope.filelist = [];
 
@@ -168,13 +169,10 @@ function editCtrl($scope, $http, $timeout)
                 ret.list.map((x) => { detail(x); })
             }   
 
-            /*
+            /* 恢复全选设置 */
             $timeout(()=>{
-                $scope.check_all = false;
-                check_all_click();
-                $scope.check_all = true;
+                $(".file_checkbox").prop("checked", $scope.check_all);
             }, 200);
-            */
         })
     }
 
