@@ -4,26 +4,25 @@
     <meta charset="utf-8">
     <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
     <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
-    <!-- font-awesome -->
-    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />  
+
     <!-- 文件上传 -->   
     <script src="/node_modules/angular-file-upload/dist/angular-file-upload.min.js" type="text/javascript"></script>
 
     <!-- 自定义 -->
     <title>系统管理</title>
     <script src="/view/js/common.js" type="text/javascript"></script>
-    <script src="/view/js/system.js" type="text/javascript"></script>
-    <link  href="/view/css/system.css" rel="stylesheet" />
+    <script src="/view/js/backup.js" type="text/javascript"></script>
+    <link  href="/view/css/backup.css" rel="stylesheet" />
 </head>
-<body ng-app="systemApp">
+<body ng-app="appApp">
     <div ng-include="'/view/header.html'"></div>
-    <div id="wrapper" class="container-fluid" ng-controller="systemCtrl">
+    <div id="wrapper" class="container-fluid" ng-controller="appCtrl">
         <div class="row">
             <div class="col-5 mt-3">
                 <div class="card">
                     <h5 class="card-header text-center">数据备份</h5>
                     <div class="card-body">
-                        <div class="backup_tips">
+                        <div class="tips">
                             <p>
                                 备份内容：<br />
                                 数据库，环境配置文件，证书目录。
@@ -33,12 +32,13 @@
                                 1. 删除系统现有的所有备份文件<br />
                                 2. 创建临时备份目录<br />
                                 3. 将备份数据（上面提到的数据库，环境配置文件等）放入临时备份目录<br />
-                                4. 打包备份数据（包括临时备份目录和上传文件目录），创建备份数据打包文件
+                                4. 打包备份数据（包括临时备份目录和上传文件目录），创建备份数据打包文件<br />
+                                5. 删除临时备份目录
                             </p>
                         </div>
                         <div class="fileinfo">
-                            <div>当前备份<span>{{fileinfo.name}}</span></div>
-                            <div>文件大小<span>{{fileinfo.size}}</span>最近修改时间<span>{{fileinfo.updatedAt}}</span></div>
+                            <div>当前备份<span><a href="{{remotefile.path}}" target="_blank">{{remotefile.name}}</a></span></div>
+                            <div>文件大小<span>{{remotefile.size}}</span>最近修改时间<span>{{remotefile.updatedAt}}</span></div>
                         </div>
                         <div class="input-group my-3">
                             <input type="text" class="form-control" placeholder="backup file name"  ng-model="backup_filename">
@@ -52,13 +52,22 @@
                 <div class="card mt-3">
                     <h5 class="card-header text-center">数据恢复</h5>
                     <div class="card-body">
-                        <div>恢复说明</div>
+                        <div class="tips">
+                            <p>
+                                恢复步骤：<br />
+                                1. 上传备份文件<br />
+                                2. 删除之前的备份文件，以及现有的运行数据（环境配置文件，证书，上传目录等）<br />
+                                3. 解压备份文件<br />
+                                4. 使用备份文件替换运行文件（环境配置文件，证书），恢复数据库<br />
+                                5. 删除解压后的备份目录
+                            </p>
+                        </div>
                         <div class="fileinfo">
                             <div>
                                 <div class="spinner-border float-right d-none" role="status" id="restore_wait"><span class="sr-only">Loading...</span></div>
                             </div>
-                            <div><i>文件名称</i><span id="restore_file_name"></span></div>
-                            <div><i>文件大小</i><span id="restore_file_size"></span><i>最近修改时间</i><span id="restore_file_last_modify"></span></div>
+                            <div>文件名称<span >{{localfile.name}}</span></div>
+                            <div>文件大小<span >{{localfile.size}}</span>最近修改时间<span>{{localfile.updatedAt}}</span></div>
                         </div>
                         <div class="input-group my-2">
                             <div class="custom-file">
@@ -66,17 +75,9 @@
                                 <label class="custom-file-label" for="inputGroupFile04">选择备份文件</label>
                             </div>
                             <div class="input-group-append">
-                                <button class="btn btn-warning" type="button"  ng-click="uploader.uploadAll()" title="上传文件将替换系统现有的备份文件！">上传备份</button>
-                                <button type="button" class="btn btn-danger" ng-click="restore_triger()" title="将备份数据替换到运行的数据库和文件！">恢复数据</button>                                
+                                <button class="btn btn-warning" id="restore_btn" type="button"  ng-click="uploader.uploadAll()">上传并恢复</button>           
                             </div>
                         </div>                        
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <h5 class="card-header text-center">文档导出</h5>
-                    <div class="card-body">
-                        将数据库中的文档导出为文件。
                     </div>
                 </div>
             </div>
