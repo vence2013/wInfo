@@ -55,18 +55,28 @@ function editCtrl($scope, $http, $timeout)
         })
     }
     
-    $scope.tag_unlink = (tag) =>
+    function get_selected_fileids()
     {
-        var fileids = [];
+        let ids = [];
 
-        var filelist = $scope.filelist;
+        let filelist = $scope.filelist;
         for (i=0; i<filelist.length; i++)
         {
-            if ($('.file_checkbox:eq('+i+')').prop('checked')) fileids.push(filelist[i].id);
+            if ($('.file_checkbox:eq('+i+')').prop('checked')) 
+                ids.push(filelist[i].id);
         }
 
-        var params = {'tag':tag, 'fileids':fileids}
-        $http.post('/file/tag/unlink', params).then((res)=>{
+        return ids;
+    }
+
+    $scope.tag_unlink = (tag) =>
+    {
+        let ids = get_selected_fileids();
+        let params = {'tag':tag, 'fileids':ids}
+        
+        $http
+        .post('/file/tag/unlink', params)
+        .then((res)=>{
             if (errorCheck(res)) return ;
 
             update();
@@ -75,16 +85,12 @@ function editCtrl($scope, $http, $timeout)
 
     function tag_link(tag)
     {
-        var fileids = [];
+        let ids = get_selected_fileids();
+        let params = {'tag':tag, 'fileids':ids}
 
-        var filelist = $scope.filelist;
-        for (i=0; i<filelist.length; i++)
-        {
-            if ($('.file_checkbox:eq('+i+')').prop('checked')) fileids.push(filelist[i].id);
-        }
-
-        var params = {'tag':tag, 'fileids':fileids}
-        $http.post('/file/tag/link', params).then((res)=>{
+        $http
+        .post('/file/tag/link', params)
+        .then((res)=>{
             if (errorCheck(res)) return ;
 
             update();
@@ -157,9 +163,21 @@ function editCtrl($scope, $http, $timeout)
         query['createget'] = (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(createget)) ? createget : '';
         query['createlet'] = (/^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(createlet)) ? createlet : '';
 
-        $http.get('/file/search', {params: query}).then((res)=>{
-            if (errorCheck(res)) 
-                return ;
+        /* 如果不是全选，记录当前选中的文件 */
+        var selected_idxs = [];
+        if (!$scope.check_all)
+        {
+            $(".file_checkbox").each((i, e)=>{
+                if ($('.file_checkbox:eq('+i+')').prop('checked')) 
+                    selected_idxs.push(i);
+            });
+        }
+            selected_ids = get_selected_fileids();
+
+        $http
+        .get('/file/search', {params: query})
+        .then((res)=>{
+            if (errorCheck(res)) return ;
 
             var ret = res.data.message;
             $scope.filelist = ret.list;
@@ -171,7 +189,14 @@ function editCtrl($scope, $http, $timeout)
 
             /* 恢复全选设置 */
             $timeout(()=>{
-                $(".file_checkbox").prop("checked", $scope.check_all);
+                if ($scope.check_all)
+                    $(".file_checkbox").prop("checked", $scope.check_all);
+                else 
+                {
+                    $(selected_idxs).each((i, e)=>{
+                        $('.file_checkbox:eq('+e+')').prop('checked', true)
+                    });
+                }
             }, 200);
         })
     }

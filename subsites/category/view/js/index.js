@@ -37,19 +37,31 @@ function indexCtrl($scope, $http)
 
             /* 替换资源前的图标（等待tree初始化完成） */
             window.setTimeout(()=>{
-                let objs = $('.type-doc').parent(".tree-label").siblings('.tree-leaf-head');
-                $(objs).css({'background': 'url(category/view/images/doc.png) no-repeat'});
+                $('.type-doc')
+                .parent(".tree-label").siblings('.tree-leaf-head')
+                .css({'background': 'url(category/view/images/doc.png) no-repeat'});
+
+                $('.type-doc').each((i, e)=>{
+                    let id = $(e).attr('data-id');
+
+                    let title = $(e).html();
+                    $(e).html("<a href='/document/display/"+id+"' target='_blank'>"+title+"</a>")
+                });
 
                 $('.type-file').each((i, e)=>{
                     let type = $(e).attr('data-ext');
 
                     let obj = $(e).parent(".tree-label").siblings('.tree-leaf-head');
-                    var icon = 'file';
+                    let icon = 'file';
                     switch (type) {
                         case 'pdf': icon = 'pdf'; break;
                         case 'zip': icon = 'compress'; break;
                     }
+
                     $(obj).css({'background': 'url(category/view/images/'+icon+'.png) no-repeat'});
+                    let title = $(e).html();
+                    let path  = $(e).attr('data-path');
+                    $(e).html("<a href='"+path+"' target='_blank'>"+title+"</a>")
                 });
             }, 200);
         });
@@ -58,7 +70,14 @@ function indexCtrl($scope, $http)
 
     $scope.toggle = (node, expanded) => {
         /* 更新展开的节点列表 */
-        var ids = $scope.listExpand.map(node => { return node.id; });
+        let ids = [];
+
+        $scope.listExpand.map(e => {
+            if (e.id != node.id) 
+                ids.push(e.id);
+        });
+        if (expanded) ids.push(node.id);
+
         refresh(ids);
         locals_write('/category/index/expand', ids);        
     }
