@@ -13,7 +13,7 @@ database=$4
 
 # 恢复运行文件
 cd $datadir/backup/
-cp -fr certificate $envfile $webdir
+cp -frv certificate $envfile $webdir
 
 # 恢复数据库
 db_res=`mysqlshow --host=${hostname} -u root -p${root_password} | grep ${database}`

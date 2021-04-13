@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path  = require('path');
+const shelljs = require('shelljs');
 const child_process = require('child_process');
 
 var Backup_state = {
@@ -82,7 +83,7 @@ exports.restore = async (filename) =>
     Backup_state['step']            = 1;
     Backup_state['messages'][1]     = '2. 解压备份文件。';
     Backup_state['timestamp_start'] = (new Date()).getTime();
-    child_process.execSync('tar xvf /data/'+filename+' -C /data');
+    shelljs.exec('tar -xvf /data/'+filename+' -C /data ');
 
     /* 2. 恢复备份文件，以及数据库 */
     Backup_state['step']            = 2;

@@ -80,7 +80,6 @@ router.get('/search', async (ctx, next)=>{
     
     query['tag'] = req2.tag;
     query['with_tag'] = (!req2.with_tag || (req2.with_tag == 'false')) ? false : true;
-    console.log('a', req2.with_tag);
     ['str', 'ext'].map((x) => {
         var value = req2[ x ]; 
         // 分割多个由空格隔开的字符串
