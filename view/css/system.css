@@ -1,0 +1,8 @@
+.backup_tips { font-size: 12px; font-style: italic; color: #888888; }
+
+.fileinfo { color: #888888; }
+.fileinfo>div>span { font-weight: bold; margin: 0px 20px 0px 5px; }
+
+.log-msg { min-height: 600px; border: 1px dashed #cccccc; border-radius: 5px; }
+.log-msg>div { line-height: 30px; font-style: italic; }
+.log-msg>div:last-child { color:#ff0000; }

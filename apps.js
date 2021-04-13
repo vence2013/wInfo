@@ -17,7 +17,10 @@ const compose   = require('koa-compose');
 /* Database, Object Relational Mapping */
 const Sequelize = require('sequelize');
 
-const cfg = require('dotenv').config({ path: 'docker_compose_env' }).parsed;
+
+global.envfile = 'docker_compose_env';
+
+const cfg = require('dotenv').config({ path: envfile }).parsed;
 const certs = {
     key : fs.readFileSync('certificate/server-key.pem'),
     ca  : fs.readFileSync('certificate/ca-cert.pem'),
