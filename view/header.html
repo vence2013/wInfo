@@ -29,7 +29,9 @@ const menu_data = [
         {'name':'Resources', 'url':'/category/view/resource.html'},
     ]},
     {'name':'Tag', 'url':'/tag'},
-    {'name':'System', 'url':'/view/backup.html'}
+    {'name':'System', 'url':'/view/backup.html', 'children':[
+    {'name':'Export Documents', 'url':'/view/export.html'},
+    ]}
 ];
 
 function nav_sub_show(index, left, top)

@@ -13,6 +13,8 @@ html, body { margin: 0px; padding: 0px; font-size: 14px; font-family:'Wastinger'
 a { text-decoration: none; font-style: italic; color: #000000; }
 a:hover { color: #ff0000; }
 
+.tips { font-size: 12px; font-style: italic; color: #888888; }
+
 /* 分页 */
 .page>div { display: inline; float: left; }
 .page>.pagelist>nav>ul>li>input { width: 60px; text-align: center; border-color: #6A0888; color: #000000; }

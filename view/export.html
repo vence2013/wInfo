@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
+    <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+
+    <!-- 文件上传 -->   
+    <script src="/node_modules/angular-file-upload/dist/angular-file-upload.min.js" type="text/javascript"></script>
+
+    <!-- 自定义 -->
+    <title>文档导出</title>
+    <script src="/view/js/common.js" type="text/javascript"></script>
+    <script src="/view/js/export.js" type="text/javascript"></script>
+    <link  href="/view/css/export.css" rel="stylesheet" />
+</head>
+<body ng-app="appApp">
+    <div ng-include="'/view/header.html'"></div>
+    <div id="wrapper" class="container-fluid" ng-controller="appCtrl">
+        <div class="row">
+            <div class="col-4 mt-3">
+                <div class="row">
+                    <div class="col m-3">
+                        <button type="button" class="btn btn-warning btn-block" ng-click="export_request();">导出所有文档</button>
+                    </div>
+                </div>
+                <div class="row tips">
+                    <div class="col">
+                        <p>
+                            导出所有文档<br />
+                            目的：在网站无法使用的情况下，可以阅读文档。（不用于导入数据库的目的）
+                        </p>
+                        <p>
+                            操作步骤：<br />
+                            1. 统计文档数量（用于显示进度）<br />
+                            2. 导出准备：删除之前的export目录，并创建新的exprot目录<br />
+                            3. 导出标签，目录等元数据到meta.txt<br />
+                            4. 逐个导出文档<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;a. 获取文档内容<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;b. 替换其中的文件路径，比如将/data/upload/20210302/*替换为../upload/*<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;c. 保存文档，名称为id-title.md<br />
+                            5. 打包导文档，包含文档目录，上传文件目录。
+                        </p>
+                        用户接口：<br />
+                        1. 显示文档导出进度<br />
+                        2. 显示耗时
+                    </div>
+                </div>
+            </div>
+            <div class="col mt-3 log-msg mr-3">
+                <div class="log-sys">
+                    <div>aac</div>
+                </div>
+                <div class="log-doc">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
