@@ -41,7 +41,7 @@ function appCtrl($scope, $http, $interval, FileUploader)
             $(ret.messages).each((i, e)=>{
                 let str = e;
                 if ((i+1) == ret.messages.length)
-                    str += "耗时："+(ret.timestamp_current - ret.timestamp_start)+" ms"
+                    str += "耗时："+Math.ceil((ret.timestamp_current - ret.timestamp_start)/1000)+"秒"
                 $('.log-msg').append('<div>'+str+'</div>');
             });
 
@@ -106,16 +106,17 @@ function appCtrl($scope, $http, $interval, FileUploader)
         /* 修改为正在备份的样式 */
         $("#restore_btn")
         .removeClass('btn-warning').addClass('btn-danger')
-        .html('正在恢复<span class="spinner-border spinner-border-sm ml-2" role="status"></span>');
-
-        timer_state_query = $interval(state_query, 1000);
+        .html('正在恢复<span class="spinner-border spinner-border-sm ml-2" role="status"></span>');       
     }
     // 上传成功
     uploader.onSuccessItem = function(fileItem, response, status, headers) {
         if (/^[\-0-9]+$/.test(response.error)) {
             toastr.success('Upload file '+fileItem.file.name+' '+response.message);
 
-            window.setTimeout(()=>{ $http.get('/backup/restore?filename='+fileItem.file.name); }, 1000);
+            window.setTimeout(()=>{ 
+                $http.get('/backup/restore?filename='+fileItem.file.name); 
+                timer_state_query = $interval(state_query, 1000);
+            }, 1000);
         } else {
             console.log(response);
             toastr.info('文件上传错误！');            

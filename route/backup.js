@@ -37,6 +37,7 @@ router.post('/restore', async (ctx, next) => {
 
     var file = ctx.request.files.file;
 
+    backupCtrl.backup_status_clear('Restore');
     await backupCtrl.upload(ctx, file);
     ctx.body = {'error':  0, 'message': 'SUCCESS'};
 })
