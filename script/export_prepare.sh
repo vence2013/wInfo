@@ -8,3 +8,5 @@ datadir=/data
 
 rm -frv $datadir/export*
 mkdir -pv $datadir/export
+
+echo '需要将upload目录移动到export目录下才能正确显示图片！' > $datadir/export/readme.md
