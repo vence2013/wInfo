@@ -13,8 +13,12 @@
 <body ng-app="appApp">
     <div ng-include="'/view/header.html'"></div>
     <div id="wrapper" class="container-fluid" ng-controller="appCtrl">
-        index<br />
-        updateAt: <%=updateAt%>
+        <div class="row">
+            <div class="col mt-3"><h4>Web Name: <%=title%></h4></div>
+        </div>
+        <div class="row">
+            <div class="col"><h4>Version: <%=updateAt%></h4></div>
+        </div>
     </div>
 </body>
 </html>

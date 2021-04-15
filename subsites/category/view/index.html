@@ -21,11 +21,15 @@
 
     <div ng-include="'/view/header.html'"></div>
     <div id="wrapper" class="container-fluid px-0">
-        <treecontrol class="tree-classic" options="treeOptions" filter-expression="predicate" filter-comparator="comparator" 
-            tree-model="treeView" expanded-nodes="listExpand" selected-node="nodeSelected"
-            on-node-toggle="toggle(node, expanded);">
-                <span class="type-{{node.type}}" data-id="{{node.id}}" data-path="{{node.location}}" data-ext="{{node.ext}}">{{node.name}}</span>
-        </treecontrol>
+        <div class="row">
+            <div class="col mt-3">
+                <treecontrol class="tree-classic" options="treeOptions" filter-expression="predicate" filter-comparator="comparator" 
+                    tree-model="treeView" expanded-nodes="listExpand" selected-node="nodeSelected"
+                    on-node-toggle="toggle(node, expanded);">
+                    <span class="type-{{node.type}}" data-id="{{node.id}}" data-path="{{node.location}}" data-ext="{{node.ext}}">{{node.name}}</span>
+                </treecontrol>
+            </div>
+        </div>
     </div>
 
     <!-- sidebar -->
