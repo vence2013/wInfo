@@ -1,5 +1,5 @@
 /****************************************************************************** 
- * 文件名称 ： fund_statistics.js
+ * 文件名称 ： fund_statistic.js
  * 功能说明 ： 基金统计信息
  * 近一周， 近一月， 近半年， 近一年， 近两年， 近三年， 今年来， 成立来
  * 
@@ -11,7 +11,7 @@
  *****************************************************************************/ 
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('fund_statistics', {
+    return sequelize.define('fund_statistic', {
         code: {
             type: DataTypes.STRING(255),
             allowNull: false,

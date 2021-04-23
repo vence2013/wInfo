@@ -1,15 +1,27 @@
 const Sequelize = require('sequelize');
 /* Custom Reference */
 const company = require('./company');
+const fund    = require('./fund');
+const fund_value = require('./fund_value');
+const fund_statistic = require('./fund_statistic');
+
 const config = require('./config.json');
-const config_env = require('dotenv').config({ path: config.envfile }).parsed;
+const config_env = require('dotenv').config({ path: config.env_file }).parsed;
 
-/* 可跳过的步骤定义如下：
- * '1': all_fund_data_reset(), fund_data_download.js
- * '2': company_next(), company.js
+
+var from = 0;
+
+/* paras
+ *   没有参数时，从头开始执行（清空数据表，重新获取所有数据） 
+ *   from <n>, 从第n步开始执行
  */
-global.skips = process.argv.slice(2);
-
+var paras = process.argv.slice(2);
+if (paras.length > 0)
+{
+    if (paras[0] == 'from')
+        from = parseInt(paras[1]);
+}
+// console.log('paras', paras, from);
 
 /* 
  * Function     : date_format
@@ -50,26 +62,6 @@ global.date_format = (fmt, date)=>{
 }
 
 
-/* ------------------------ Clear/Reset all data --------------------------- */
-
-function all_fund_data_reset(conn)
-{
-    if (skips.indexOf('1') != -1)
-        return company.get(conn, config);
-
-    conn['db']
-    .query("DELETE FROM `fund_companies`;")
-    .then(async () => { return conn['db'].query("DELETE FROM `fund_infos`;"); })
-    .then(async () => { return conn['db'].query("DELETE FROM `fund_values`;"); })
-    .then(async () => { return conn['db'].query("DELETE FROM `fund_statistics`;"); })
-    .then(() => {
-        console.log("all fund data cleared (reset) complete!");
-
-        company.get(conn, config);
-    });
-}
-
-
 /* ------------------------ Database Connection ---------------------------- */
 
 var DB_connection = {};
@@ -93,7 +85,7 @@ DB_connection['db']
     DB_connection['model']['fund_company']     = await DB_connection['db'].import(__dirname+"/../model/fund_company");
     DB_connection['model']['fund_info']        = await DB_connection['db'].import(__dirname+"/../model/fund_info");
     DB_connection['model']['fund_value']      = await DB_connection['db'].import(__dirname+"/../model/fund_value");
-    DB_connection['model']['fund_statistics'] = await DB_connection['db'].import(__dirname+"/../model/fund_statistics");
+    DB_connection['model']['fund_statistic'] = await DB_connection['db'].import(__dirname+"/../model/fund_statistic");
 
     // 同步到数据库
     DB_connection['db']
@@ -101,7 +93,16 @@ DB_connection['db']
     .then(()=>{
         console.log('Fund data download starting!');
 
-        all_fund_data_reset( DB_connection );
+        switch (from)
+        {
+            case 0:  company.get(DB_connection, config);   break; // 重新获取所有数据
+            case 1:  fund.get(DB_connection, config);      break; // 重新获取基金信息数据
+            case 2:  fund.info_list(DB_connection, config); break; // 更新基金信息数据
+            case 3:  fund_value.get(DB_connection, config); break; // 重新获取基金净值数据
+            case 4:  fund_statistic.get(DB_connection, config); break; // 重新获取基金统计数据
+            default: console.log("Unkown operation, exit!");
+        }
+        
     })               
 }).catch(err => { 
     console.error('^~^ Unable to connect to the database:', err); 

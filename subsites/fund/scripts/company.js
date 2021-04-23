@@ -1,16 +1,20 @@
+const fs = require('fs');
 const cheerio = require('cheerio');
 const Request = require('request');
 /* Custom Reference */
 const fund = require('./fund');
 
 
-var failed_company_codes = [];
-var company_codes = [];
+var failed_company_info = [];
 
-exports.get = (conn, cfg) => 
+exports.get = async (conn, cfg) => 
 {
     let url = cfg.urls.company;
     console.log("[company], list - ", url);
+
+    /* 清空所有后续数据 */
+    await conn['db'].query("DELETE FROM `fund_companies`;");
+    console.log("all fund data cleared!");
 
     Request
     .get({
@@ -18,8 +22,10 @@ exports.get = (conn, cfg) =>
         'timeout': 60000,
     }, async (err, res, body)=>{
         if (err || (res.statusCode != 200))
+        {
             console.log("[company], list(error) - err:%o, res:%o, body:%o.", err, res, body);
-        else {
+            console.log("Cannot continue, please retry!");
+        } else {
             let codes = [];            
             let $ = cheerio.load(body);
 
@@ -32,22 +38,14 @@ exports.get = (conn, cfg) =>
                     if (code.length) { codes.push(code[0].substr(1, 8)); }
                 }
             })
-            company_codes = [].concat(codes);
             console.log("[company], list(%d): %s", codes.length, JSON.stringify(codes));
 
-            if (skips.indexOf('2') == -1)
-            {
-                /* 2. 添加到数据库 */
-                const fund_company = conn.model['fund_company'];
-                let objs = codes.map((x)=>{ return {'code': x}; }); // 构造数据库实例
+            /* 2. 添加到数据库 */
+            const fund_company = conn.model['fund_company'];
+            let objs = codes.map((x)=>{ return {'code': x}; }); // 构造数据库实例
 
-                fund_company
-                .bulkCreate(objs, {logging: false})
-                .then(()=>{
-                    company_next(conn, cfg, codes);
-                });
-            } else 
-                fund.get_by_company(conn, cfg, company_codes);
+            await fund_company.bulkCreate(objs, {logging: false});
+            company_next(conn, cfg, codes);
         }
     })
 }
@@ -58,6 +56,27 @@ function company_next(conn, cfg, codes)
     let url = cfg.urls['company_info'].replace(/\*/, ccode);
     console.log("[company], info(left %d) - %s", codes.length, url);
 
+    function next_step()
+    {
+        if (0 == codes.length)
+        {
+            if (failed_company_info.length > 0)
+            {
+                let codes_retry = [].concat(failed_company_info);
+
+                console.log("[company], info(failed:%d) - %s\n\n", failed_company_info.length, JSON.stringify(failed_company_info));
+                /* 将数组写入到文件 */
+                //fs.writeFileSync(cfg.fails_file, "company info fails\n"+JSON.stringify(failed_company_info), {flag: 'a'});
+
+                failed_company_info = [];
+                company_next(conn, cfg, codes_retry);
+            } else
+                fund.get(conn, cfg);  // 下一步：获取基金公司所属的基金
+        }
+        else
+            setTimeout(() => { company_next(conn, cfg, codes); }, cfg.next_interval);
+    }
+
     Request
     .get({
         'url': url,
@@ -65,7 +84,9 @@ function company_next(conn, cfg, codes)
     }, async (err, res, body)=>{
         if (err || (res.statusCode != 200))
         {
-            failed_company_codes.push( ccode );
+            failed_company_info.push( ccode );
+            next_step(); // 继续下一记录处理
+
             console.log("[company], info(error) - err:%o, res:%o, body:%o.", err, res, body);
         } else {
             let info = {};
@@ -103,33 +124,22 @@ function company_next(conn, cfg, codes)
                     }
                 })
             })
-            //console.log('company info', info);
 
             /* 2. 添加到数据库 */
             if (info['name'])
             {
                 const fund_company = conn.model['fund_company'];
 
-                await fund_company.findOne({
+                await fund_company.update({
+                    'name': info.name, 'attr': info.attr, 'createDate': info.createDate, 'managerTotal': info.managerTotal, 
+                    'createMoney': info.createMoney, 'foundTotal': info.foundTotal, 'moneyTotal': info.moneyTotal
+                }, {
                     logging: false,
                     'where': {'code': ccode}
-                })
-                .then((res)=>{
-                    res.update({'name': info.name, 'attr': info.attr, 'createDate': info.createDate,
-                        'createMoney': info.createMoney, 'foundTotal': info.foundTotal, 'moneyTotal': info.moneyTotal, 
-                        'managerTotal': info.managerTotal}, {logging: false});
-                })
+                });
             }
 
-            if (0 == codes.length)
-            {
-                if (failed_company_codes.length > 0)
-                    console.log("[company], info(failed) - %s", JSON.stringify(failed_company_codes));
-
-                fund.get_by_company(conn, cfg, company_codes);
-            }
-            else
-                setTimeout(() => { company_next(conn, cfg, codes); }, 500);
+            next_step(); // 继续下一步
         }
     })
 }

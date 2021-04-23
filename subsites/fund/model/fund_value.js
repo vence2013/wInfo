@@ -18,13 +18,13 @@ module.exports = (sequelize, DataTypes) => {
         date: {
             type: DataTypes.DATE
         },
-        value: {
+        jz_unit: {
             type: DataTypes.FLOAT  // 单位净值
         }, 
-        value2: {
+        jz_acc: {
             type: DataTypes.FLOAT  // 累计净值
         },
-        value3: {
+        jz_grate: {
             type: DataTypes.FLOAT  // 净值增长率
         },
     }, {
