@@ -1,0 +1,22 @@
+.filter-options { border: 2px solid #cccccc; border-radius: 5px; }
+
+.filter-title { margin: 5px 10px; font-weight: bold; color:purple; font-style: italic; }
+
+.filter-ops { position: absolute; top:7px; right: 10px;  }
+.filter-ops>div { display: inline; float: left; margin-left: 10px; width: 32px; height: 32px; cursor: pointer; }
+.filter-clear { background: url(../images/clear.png) no-repeat; }
+.filter-apply { background: url(../images/apply.png) no-repeat; }
+
+#nav-tabContent { min-height: 200px; }
+
+.filter-result { min-height: 300px; }
+.res-title { border-bottom: 1px dashed #cccccc; line-height: 30px; font-weight: bold; font-style: italic; }
+.res-item { display: table; width: 100%; }
+.res-item>div { display: inline; float: left; margin-left: 10px; line-height: 24px; font-size: 12px; color: #888888; }
+.res-item>div>span { font-size: 16px; font-weight: bold; color: #336699; margin-left: 5px; }
+
+.list>a { font-size: 12px; margin-left: 10px; line-height: 25px; }
+
+.detail { border: 1px dashed #cccccc; border-radius: 5px; padding: 5px; min-height: 100px; }
+.detail>div { display: inline; float: left; line-height: 30px; margin-left: 20px; }
+.detail>div>span { font-size: 12px; color: #cccccc; margin-right: 5px; }
