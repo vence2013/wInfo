@@ -54,7 +54,7 @@ function fund_value_next(conn, cfg, fund_codes)
     Request
     .get({
         'url': url, 
-        timeout: 60000,
+        timeout: cfg.request_timeout,
         headers: {
             'referer': 'http://fundf10.eastmoney.com'
         }

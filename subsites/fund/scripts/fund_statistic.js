@@ -10,11 +10,12 @@ exports.get = async (conn, cfg) =>
     /* 清空所有后续数据 */
     await conn['db'].query("DELETE FROM `fund_statistics`;");
     console.log("all fund statistic data cleared!");
-    console.log("[fund], statistic - %s.", url);    
+
+    console.log("[fund], statistic - %s.", url);
     Request
     .get({
         'url': url,
-        'timeout': 60000,
+        'timeout': cfg.request_timeout,
         headers: {
             'referer': 'http://fundf10.eastmoney.com'
         }
@@ -53,6 +54,7 @@ exports.get = async (conn, cfg) =>
             } while (list.length > 0);
 
             console.log('[fund], statistic - complete!');
+            process.exit(0);
         }
     })
 }

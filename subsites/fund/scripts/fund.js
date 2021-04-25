@@ -56,7 +56,7 @@ function company_fund_next(conn, cfg, company_codes)
     Request
     .get({
         'url': url,
-        'timeout': 60000,
+        'timeout': cfg.request_timeout,
     }, async (err, res, body)=>{
         if (err || (res.statusCode != 200))
         {
@@ -144,7 +144,7 @@ async function info_next(conn, cfg, fund_codes)
     Request
     .get({
         'url': url, 
-        'timeout': 60000
+        'timeout': cfg.request_timeout
     }, async (err, res, body)=>{
         if (err || (res.statusCode != 200))
         {

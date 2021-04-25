@@ -19,7 +19,7 @@ exports.get = async (conn, cfg) =>
     Request
     .get({
         'url': url,
-        'timeout': 60000,
+        'timeout': cfg.request_timeout,
     }, async (err, res, body)=>{
         if (err || (res.statusCode != 200))
         {

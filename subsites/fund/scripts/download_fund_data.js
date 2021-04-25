@@ -9,20 +9,6 @@ const config = require('./config.json');
 const config_env = require('dotenv').config({ path: config.env_file }).parsed;
 
 
-var from = 0;
-
-/* paras
- *   没有参数时，从头开始执行（清空数据表，重新获取所有数据） 
- *   from <n>, 从第n步开始执行
- */
-var paras = process.argv.slice(2);
-if (paras.length > 0)
-{
-    if (paras[0] == 'from')
-        from = parseInt(paras[1]);
-}
-// console.log('paras', paras, from);
-
 /* 
  * Function     : date_format
  * Description  : 
@@ -64,6 +50,48 @@ global.date_format = (fmt, date)=>{
 
 /* ------------------------ Database Connection ---------------------------- */
 
+let cmd = {"type":"unknow"};
+/* paras
+ *   没有参数时，从头开始执行（清空数据表，重新获取所有数据） 
+ *   from <n>, 从第n步开始执行
+ */
+var paras = process.argv.slice(2);
+if (paras.length > 0)
+{
+    if (paras[0] == 'from')
+    {
+        cmd['type'] = 'from';
+        cmd['para'] = (paras.length > 1) ? parseInt(paras[1]) : 0;
+    }
+}
+
+if ('unknow' == cmd['type'])
+{
+    let help = "unkown command!\n"+
+               "supported list:\n"+
+               "- from [step]\n";
+    console.log(help);
+    process.exit(1);
+}
+
+function download_entry()
+{
+    console.log('Fund data download starting!');
+
+    if ('from' == cmd['type'])
+    {
+        switch (cmd['para'])
+        {
+            case 0:  company.get(DB_connection, config);   break; // 重新获取所有数据
+            case 1:  fund.get(DB_connection, config);      break; // 重新获取基金信息数据
+            case 2:  fund.info_list(DB_connection, config); break; // 更新基金信息数据
+            case 3:  fund_value.get(DB_connection, config); break; // 重新获取基金净值数据
+            case 4:  fund_statistic.get(DB_connection, config); break; // 重新获取基金统计数据
+            default: console.log("Unkown operation, exit!");
+        }
+    }
+}
+
 var DB_connection = {};
 
 // 创建ORM对象
@@ -88,22 +116,9 @@ DB_connection['db']
     DB_connection['model']['fund_statistic'] = await DB_connection['db'].import(__dirname+"/../model/fund_statistic");
 
     // 同步到数据库
-    DB_connection['db']
-    .sync({logging: false})
-    .then(()=>{
-        console.log('Fund data download starting!');
-
-        switch (from)
-        {
-            case 0:  company.get(DB_connection, config);   break; // 重新获取所有数据
-            case 1:  fund.get(DB_connection, config);      break; // 重新获取基金信息数据
-            case 2:  fund.info_list(DB_connection, config); break; // 更新基金信息数据
-            case 3:  fund_value.get(DB_connection, config); break; // 重新获取基金净值数据
-            case 4:  fund_statistic.get(DB_connection, config); break; // 重新获取基金统计数据
-            default: console.log("Unkown operation, exit!");
-        }
-        
-    })               
+    await DB_connection['db'].sync({logging: false});
+    
+    download_entry();           
 }).catch(err => { 
     console.error('^~^ Unable to connect to the database:', err); 
 });
