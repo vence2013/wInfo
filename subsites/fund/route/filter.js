@@ -7,7 +7,6 @@ router.post('/apply', async (ctx, next) => {
 
     let req = ctx.request.body;
     let ret = await filterCtrl.apply(ctx, req);
-    console.log(req, ret);
 
     ctx.body = {'error':0, 'message':ret};
 });

@@ -4,25 +4,23 @@ exports.get = async (ctx, type, code) =>
     const FundCompany = ctx.models['fund_company'];
     const FundInfo = ctx.models['fund_info'];
     const FundStatistic = ctx.models['fund_statistic'];
-    let ret;
 
-    if ('company' == type) 
+    switch (type)
     {
-        ret = await FundCompany.findOne({
+    case 'company':
+        return await FundCompany.findOne({
             logging:false, raw:true, 
             where:{'code':code}
         });
-    } else if ('fund' == type) {
-        ret = await FundInfo.findOne({
+    case 'statistic':
+        return await FundStatistic.findOne({
             logging:false, raw:true, 
             where:{'code':code}
         });
-    } else if ('statistic' == type) {
-        ret = await FundStatistic.findOne({
+    default:
+        return await FundInfo.findOne({
             logging:false, raw:true, 
             where:{'code':code}
         });
     }
-
-    return ret;
 }

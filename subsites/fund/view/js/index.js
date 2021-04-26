@@ -83,22 +83,31 @@ function appCtrl($scope, $http)
     $scope.$watch("filter", filter_display, true)
 
 
+    /* 清除当前选项 */
     $scope.filter_clear = () =>
     {
-        $scope.filter = {
-            "request":'company',
-            "company":{}, "fund":{}, "statistic":{}, "value":{}
-        };
+        let type = $scope.filter['request'];
+
+        $scope.filter[ type ] = {};
     }
 
 
     $scope.filter_apply = filter_apply;
     function filter_apply()
     {
+        let bg = $('.filter-apply').css('background');
+        $('.filter-apply')
+        .css('background', 'url()')
+        .addClass('spinner-border');
+
         $http
         .post("/fund/filter/apply", $scope.filter)
         .then((res) => {
             if (errorCheck(res)) return ;
+
+            $('.filter-apply')
+            .removeClass('spinner-border')
+            .css('background', bg);
 
             locals_write("/fund/filter", $scope.filter);
             
@@ -126,7 +135,10 @@ function appCtrl($scope, $http)
                 let skip = ['createdAt', 'updatedAt'];
 
                 if (skip.indexOf(x) == -1)
-                    $(".detail").append('<div><span>'+x+'</span>'+ret[x]+'</div>');
+                {
+                    let val = (x.indexOf('Date') != -1) ? ret[x].substr(0, 10) : ret[x];
+                    $(".detail").append('<div><span>'+x+'</span>'+val+'</div>');
+                }
             }
         })
     }
@@ -135,11 +147,10 @@ function appCtrl($scope, $http)
     {
         let type = $scope.filter['request'];
 
-        switch (type)
-        {
-            case 'company': return info['name'];
-            case 'fund': return info['fullname'];
-        }
+        if ('company' == type)
+            return info['name'];
+        
+        return info['fullname'];
     }
 
     var urls;
@@ -157,11 +168,10 @@ function appCtrl($scope, $http)
     {
         let type = $scope.filter['request'];
 
-        switch (type)
-        {
-            case 'company': return urls['company_info'].replace(/\*/, code);
-            case 'fund': return urls['fund_info'].replace(/\*/, code);
-        }
+        if ('company' == type)
+            return urls['company_info'].replace(/\*/, code);
+
+        return urls['fund_info'].replace(/\*/, code);
     }
 
     $('a[data-toggle="tab"]').on('show.bs.tab', (event) => {
