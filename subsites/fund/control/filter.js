@@ -1,5 +1,6 @@
 const moment = require('moment');
 const Sequelize = require('sequelize');
+const { opts } = require('../route/filter');
 const Op = Sequelize.Op; 
 
 
@@ -113,23 +114,36 @@ exports.apply = async (ctx, ops) =>
         return await FundInfo.findAll({logging:false, raw:true, where:{'code':codes}});
 
     /* 净值筛选，基于上一步的结果 */
+    let year = (new Date).getFullYear();
     let min_having = where_count_range(ops.value, '', 'inc_min_count');
     if (min_having)
     {
+        let min_year = moment((year - ops.value['inc_min_year']) + '-01-01', moment.ISO_8601);
+
         let min_ret = await FundValue.findAll({
             logging:false, raw:true, 
             attributes: ['code'], group:'code', having:min_having,
-            where: {'jz_grate':{[Op.gte]: ops.value['inc_min']}, 'code':codes } // 属于指定范围的基金（上一步的结果）
+            where: {
+                'date':{[Op.gte]:min_year},
+                'jz_grate':{[Op.gte]: ops.value['inc_min']}, 
+                'code':codes // 属于指定范围的基金（上一步的结果）
+            }
         });
         codes = min_ret.map((x)=>{ return x.code; });
     }
     let max_having = where_count_range(ops.value, '', 'inc_max_count');
     if (max_having)
     {
+        let min_year = moment((year - ops.value['inc_max_year']) + '-01-01', moment.ISO_8601);
+
         let max_ret = await FundValue.findAll({
             logging:false, raw:true, 
             attributes: ['code'], group:'code', having:min_having,
-            where: {'jz_grate':{[Op.gte]: ops.value['inc_max']}, 'code':codes } // 属于指定范围的基金（上一步的结果）
+            where: {
+                'date':{[Op.gte]:min_year},
+                'jz_grate':{[Op.gte]: ops.value['inc_max']}, 
+                'code':codes // 属于指定范围的基金（上一步的结果）
+            } 
         });
         codes = max_ret.map((x)=>{ return x.code; });
     }

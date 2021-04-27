@@ -72,8 +72,10 @@ function appCtrl($scope, $http)
         item_display('statistic', 'Statistic', statistic_meta);
     
         const value_meta = [
+            {'title':'年限', 'min':'inc_min_year', 'max':'none'},
             {'title':'增长率小于（%）', 'min':'inc_min', 'max':'none'},
             {'title':'次数范围', 'min':'inc_min_count_min', 'max':'inc_min_count_max'},
+            {'title':'年限', 'min':'inc_max_year', 'max':'none'},
             {'title':'增长率大于（%）', 'min':'inc_max', 'max':'none'},
             {'title':'次数范围', 'min':'inc_max_count_min', 'max':'inc_max_count_max'},
         ];

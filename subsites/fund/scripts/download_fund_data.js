@@ -58,10 +58,12 @@ let cmd = {"type":"unknow"};
 var paras = process.argv.slice(2);
 if (paras.length > 0)
 {
-    if (paras[0] == 'from')
+    if ('from' == paras[0])
     {
         cmd['type'] = 'from';
         cmd['para'] = (paras.length > 1) ? parseInt(paras[1]) : 0;
+    } else if ('clear' == paras[0]) {
+        cmd['type'] = 'clear';
     }
 }
 
@@ -69,12 +71,13 @@ if ('unknow' == cmd['type'])
 {
     let help = "unkown command!\n"+
                "supported list:\n"+
-               "- from [step]\n";
+               "- from [step]\n"+
+               "- clear\n";
     console.log(help);
     process.exit(1);
 }
 
-function download_entry()
+async function download_entry()
 {
     console.log('Fund data download starting!');
 
@@ -89,6 +92,14 @@ function download_entry()
             case 4:  fund_statistic.get(DB_connection, config); break; // 重新获取基金统计数据
             default: console.log("Unkown operation, exit!");
         }
+    } else if ('clear' == cmd['type']) {
+        /* 清空所有数据 */
+        await DB_connection['db'].query("DELETE FROM `fund_companies`;");
+        await DB_connection['db'].query("DELETE FROM `fund_infos`;");
+        await DB_connection['db'].query("DELETE FROM `fund_statistics`;");
+        await DB_connection['db'].query("DELETE FROM `fund_values`;");
+        console.log("all fund data cleared!");
+        process.exit( 0 );
     }
 }
 
