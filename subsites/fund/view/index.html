@@ -7,6 +7,8 @@
     <!-- Bootstrap -->
     <script src="/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- font-awesome -->
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 
     <!-- 自定义 -->
     <title>基金筛选</title>
@@ -220,7 +222,7 @@
                                     </div>
                                     <input type="text" class="form-control" ng-model="filter.value.inc_max_year" placeholder="3，即3年内">
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="col">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -242,6 +244,22 @@
                     </div>
                 </div>
                 <div class="filter-result"></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" ng-model="filter_title" >
+                            <button class="btn btn-outline-secondary" type="button" ng-click="add()">存储当前过滤器配置</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col filter-list">
+                        <div ng-repeat="x in filter_list">
+                            <a href="#" ng-click="filter_get(x.id);">{{x.value|limitTo:10}}</a>
+                            <i class="fa fa-trash-o" ng-click="delete(x.id);"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col mt-3">
                 <div class="detail"></div>

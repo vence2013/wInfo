@@ -180,4 +180,56 @@ function appCtrl($scope, $http)
         let name = $(event.target).attr('name');
         $scope.filter['request'] = name;
     })
+
+    /* --------------------------------------------------------------------- */
+
+    // 新增存储过滤器配置
+    $scope.add = () => 
+    {
+        let title = $scope.filter_title;
+        if (!title)
+            return toastr.info('请输入有效的过滤器标题', '', {"positionClass": "toast-bottom-right"});
+
+        $http
+        .post('/fund/filter', {'title':title, 'filter':$scope.filter})
+        .then((res)=>{
+            if (errorCheck(res)) return ;
+
+            filter_list();
+        });
+    }
+
+    $scope.filter_get = (id) =>
+    {
+        $http
+        .get('/fund/filter/detail/'+id)
+        .then((res) => {
+            if (errorCheck(res)) return ;
+
+            let ret = res.data.message;
+            $scope.filter = ret;
+        })
+    }
+
+    $scope.delete = (id) =>
+    {
+        $http
+        .delete('/fund/filter/'+id)
+        .then((res) => {
+            if (errorCheck(res)) return ;
+
+            filter_list();
+        })
+    }
+
+    function filter_list() {
+        $http
+        .get('/fund/filter')
+        .then((res)=>{
+            if (errorCheck(res)) return ;
+
+            $scope.filter_list = res.data.message;
+        });
+    }
+    filter_list();
 }

@@ -150,3 +150,97 @@ exports.apply = async (ctx, ops) =>
 
     return await FundInfo.findAll({logging:false, raw:true, where:{'code':codes}});
 }
+
+exports.add = async (ctx, title, value) =>
+{
+    const fund_filter = ctx.models['fund_filter'];
+
+    let [ret, created] = await fund_filter.findOrCreate({
+        logging:false, 
+        where: {'father':0, 'name':'title', 'value':title}
+    });
+    let id_title = ret.get({plain:true}).id;
+
+    /* 如果当前已存在，则删除之前的配置数据 */
+    if (!created)
+        await fund_filter.destroy({
+            logging:false,
+            where:{'father':id_title}
+        });
+
+    /* 将过滤配置转换为数组
+     * 比如，['request']:x,  ['company.fund_min']:x, ...
+     */
+    let objs = [];
+    for (l1 in value)
+    {
+        if ('object' == typeof(value[ l1 ]))
+        {
+            let obj2 = value[ l1 ];
+            for (l2 in obj2)
+            {
+                let k2 = l1 + '.' + l2;
+                objs.push({'father':id_title, 'name':k2, 'value':obj2[ l2 ]});
+            }
+        } else 
+            objs.push({'father':id_title, 'name':l1, 'value':value[ l1 ]});
+    }
+
+    await fund_filter.bulkCreate(objs, {logging: false});
+    return true;
+}
+
+exports.list = async (ctx) =>
+{
+    const fund_filter = ctx.models['fund_filter'];
+
+    return await fund_filter.findAll({
+        logging:false, raw:true,
+        where:{'father':0}
+    });
+}
+
+exports.detail = async (ctx, id) =>
+{
+    const fund_filter = ctx.models['fund_filter'];
+
+    let ret = await fund_filter.findAll({
+        logging:false, raw:true,
+        where:{'father':id}
+    });
+
+    /* 将数组记录构建为对象 */
+    let obj = {};
+    for (i = 0; i < ret.length; i++)
+    {
+        let idx = ret[i]['name'];
+
+        if (idx.indexOf('.') == -1)
+            obj[ idx ] = ret[i]['value'];
+        else 
+        {
+            let indexs = idx.split('.');
+            let k1 = indexs[0], k2 = indexs[1];
+            if (!obj[ k1]) obj[ k1] = {};
+            obj[ k1 ][ k2] = ret[i]['value'];
+        }
+    }
+
+    return obj;
+}
+
+exports.delete = async (ctx, id) =>
+{
+    const fund_filter = ctx.models['fund_filter'];
+
+    /* 删除该配置的所有数据 */
+    await fund_filter.destroy({
+        logging:false, raw:true,
+        where:{'father':id}
+    });
+
+    return await fund_filter.destroy({
+        logging:false, raw:true,
+        where:{'id':id}
+    });
+}

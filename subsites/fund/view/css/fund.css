@@ -20,3 +20,8 @@
 .detail { border: 1px dashed #cccccc; border-radius: 5px; padding: 5px; min-height: 100px; }
 .detail>div { display: inline; float: left; line-height: 30px; margin-left: 20px; }
 .detail>div>span { font-size: 12px; color: #cccccc; margin-right: 5px; }
+
+.filter-list { min-height: 100px; }
+.filter-list>div { display: inline; float: left; height: 30px; line-height: 30px; 
+padding: 0px 10px; margin: 5px 10px 0px 0px; border: 1px solid #dddddd; border-radius: 3px; }
+.filter-list>div>i { margin-left: 10px; cursor: pointer; }
