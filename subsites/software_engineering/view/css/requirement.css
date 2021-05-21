@@ -1,5 +1,8 @@
 /* category */
 .edit_card { position: fixed; top: 50px; right: 10px; width: 500px; border: 2px solid #cccccc; border-radius: 5px; padding: 10px; }
-.notify { font-size: 14px; font-style: italic; color: #888888; }
 
-.category_id { font-style: italic; color: #888888; }
+#contentWnd { height: 500px; }
+
+/* importance class */
+.i1 { color: #ff0000; }
+.i3 { color: #888888; }

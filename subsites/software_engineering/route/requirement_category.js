@@ -15,6 +15,24 @@ router.post('/', async (ctx)=>{
     else     ctx.body = {'error': -1, 'message': '添加失败！'};
 })
 
+router.get('/project', async (ctx)=>{
+    const CategoryCtrl = ctx.controls['software_engineering/requirement_category'];
+
+    var roots = await CategoryCtrl.project(ctx);
+    ctx.body = {'error': 0, 'message': roots};
+})
+
+router.get('/category/:prj', async (ctx)=>{
+    const CategoryCtrl = ctx.controls['software_engineering/requirement_category'];
+
+    /* 提取有效的参数 */
+    var req2 = ctx.params;
+    var prj = req2.prj;
+
+    var list = await CategoryCtrl.category_list(ctx, prj);
+    ctx.body = {'error': 0, 'message': list};
+})
+
 /* 获取目录树结构（已展开节点） */
 router.get('/:rootid', async (ctx)=>{
     const CategoryCtrl = ctx.controls['software_engineering/requirement_category'];

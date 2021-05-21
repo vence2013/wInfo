@@ -18,7 +18,9 @@ function appCtrl($scope, $http)
     function refresh(expand_ids) {
         let ids = expand_ids ? expand_ids : locals_read('/software_engineering/requirement_category/expand');
 
-        $http.get('/software_engineering/requirement_category/0', {params:{'expand_ids':ids}}).then((res)=>{
+        $http
+        .get('/software_engineering/requirement_category/0', {params:{'expand_ids':ids}})
+        .then((res)=>{
             if (errorCheck(res)) return ;
 
             let ret = res.data.message;

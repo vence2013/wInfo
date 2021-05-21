@@ -6,6 +6,18 @@ exports.create = async (ctx, fid, name) => {
         where: {'name':name, 'father':fid}
     });
 
+    /* 为顶级目录（产品）添加固定的子目录 */
+    if (0 == parseInt(fid))
+    {
+        let e = ins.get({'plain':true});
+        let sub_fixed = [
+            {'father':e.id, 'name':'产品需求（Product Requirements）'}, 
+            {'father':e.id, 'name':'功能需求（Functional Requirements）'}, 
+        ];
+
+        await Category.bulkCreate(sub_fixed) ;
+    }
+
     return ins.get({plain: true});
 }
 
@@ -50,8 +62,9 @@ async function tree_with_expand(ctx, rootid, ids_expand)
             where: {'father':0}
         });
         console.log('tt', ret);
+        /* 未完 */
     }
-
+    ids_expand.push(rootid);
 
     /* 获取展开目录的2级子目录（ID）（为了正确显示） */
     var ids_sub = [].concat(ids_expand);
@@ -78,7 +91,8 @@ async function tree_with_expand(ctx, rootid, ids_expand)
     return build_tree(nodes, 0);
 }
 
-exports.edit = async (ctx, id, name) => {
+exports.edit = async (ctx, id, name) => 
+{
     const Category = ctx.models['se_requirement_category'];
 
     await  Category.update({
@@ -114,7 +128,8 @@ async function get_sub_tree_nodes(ctx, rootid)
 }
 
 /* 查找并删除子树所有节点 */
-exports.delete = async (ctx, id)=>{
+exports.delete = async (ctx, id) =>
+{
     const Category = ctx.models['se_requirement_category'];
     var ids = [ id ];
 
@@ -126,4 +141,49 @@ exports.delete = async (ctx, id)=>{
         logging: false, 
         where: {'id': ids}
     });
+}
+
+
+exports.project = async (ctx) =>
+{
+    const Category = ctx.models['se_requirement_category'];
+
+    var list = await Category.findAll({
+        raw: true, logging: false, 
+        where: { 'father':0}
+    });
+
+    return list;
+}
+
+async function tree_to_list(ctx, rootid, depth)
+{
+    const Category = ctx.models['se_requirement_category'];
+    let list = [];
+
+    let sub = await Category.findAll({
+        raw: true, logging: false, 
+        where: {'father':rootid}
+    });
+    if (sub.length == 0)
+        return list;
+
+    for (let i = 0; i < sub.length; i++)
+    {
+        let obj = {'id':sub[i]['id'], 'name':sub[i]['name'], 'depth':depth};
+        list.push(obj);
+
+        let ret = await tree_to_list(ctx, sub[i]['id'], depth + 1);
+        if (ret.length > 0)
+            list = list.concat(ret);
+    }
+
+    return list;
+}
+
+exports.category_list = async (ctx, prj) =>
+{
+    let ret = await tree_to_list(ctx, prj, 0);
+
+    return ret;
 }
