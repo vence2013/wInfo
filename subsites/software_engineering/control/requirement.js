@@ -7,16 +7,31 @@ exports.create = async (ctx, id, title, req) =>
 
     if (req.updatedAt)
     {
-        let ins = await Requirement.update({
-            'title':title, 'desc':req.desc, 'comment':req.comment, 'importance':req.importance, 'seRequirementCategoryId':req.category
-        },{
+        let items = {};
+
+        items['title'] = title;
+        items['seRequirementCategoryId'] = req.category;
+        items['desc']  = req.desc;
+        items['comment']  = req.comment;
+        items['importance'] = req.importance;
+        items['sources'] = req.sources ? req.sources : '';
+        
+        let ins = await Requirement.update(items,{
             logging:false, 
             where:{'id':id}
         });
     } else {
+        let items = {};
+
+        items['desc']  = req.desc;
+        items['comment']  = req.comment;
+        items['importance'] = req.importance;
+        items['sources'] = req.sources ? req.sources : '';
+
         let [ins, created] = await Requirement.findOrCreate({
             logging:false, 
-            where: {'id':id, 'title':title, 'desc':req.desc, 'comment':req.comment, 'importance':req.importance, 'seRequirementCategoryId':req.category}
+            where: {'id':id, 'title':title, 'seRequirementCategoryId':req.category},
+            defaults: items
         });
     }
 
@@ -90,9 +105,21 @@ exports.search = async (ctx, category, ids, str) =>
     /* 将数组转换为字符串 */
     for (let i = 0; i < ret.length; i++)
     {
-        ret[i]['desc'] = ret[i]['desc'].toString();
-        ret[i]['comment'] = ret[i]['comment'].toString();
+        ret[i]['desc'] = ret[i]['desc'] ? ret[i]['desc'].toString() : '';
+        ret[i]['comment'] = ret[i]['comment'] ? ret[i]['comment'].toString() : '';
     }
+
+    return ret;
+}
+
+exports.get_by_ids = async (ctx, ids) => 
+{
+    const Requirement = ctx.models['se_requirement'];
+
+    let ret = await Requirement.findAll({
+        raw:true, logging:false,
+        where:{'id':ids}
+    });
 
     return ret;
 }

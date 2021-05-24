@@ -7,15 +7,14 @@ module.exports = (sequelize, DataTypes) => {
             autoIncreament: false,
         },
         title: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.STRING(255),
+            allowNull: false, 
         },
         desc: {
             type: DataTypes.BLOB, 
-            allowNull: false, 
         },
         comment: {
             type: DataTypes.BLOB, 
-            allowNull: false, 
         },
         importance: { 
             type: DataTypes.INTEGER

@@ -28,6 +28,19 @@ router.get('/', async (ctx)=>{
     ctx.body = {'error': 0, 'message': ret};
 })
 
+router.get('/ids', async (ctx)=>{
+    const requirementCtrl = ctx.controls['software_engineering/requirement'];
+
+    /* 提取有效的参数 */
+    let req = ctx.query;
+    let ids = [];
+    for (k in req) 
+        ids.push(req[k]);
+
+    let ret = await requirementCtrl.get_by_ids(ctx, ids);
+    ctx.body = {'error': 0, 'message': ret};
+})
+
 router.delete('/:id', async (ctx) =>
 {
     const requirementCtrl = ctx.controls['software_engineering/requirement'];

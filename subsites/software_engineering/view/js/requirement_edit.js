@@ -114,29 +114,43 @@ function appCtrl($scope, $http)
     /* 需求处理 -----------------------------------------------------------------*/
 
     $scope.req = {'id':'', 'title':'', 'desc':'', 'comment':''};
-
-    $scope.window_switch = window_switch;
     var wnd_current = undefined;
-    function window_switch(wnd)
+    function window_switch(pre, cur)
     {
-        if ((wnd_current == 'desc') || (wnd_current == 'comment'))
-            $scope.req[ wnd_current ] = $("#contentWnd").html();
+        /* 存储当前内容 */
+        if ((pre == 'desc') || (pre == 'comment'))
+        {
+            $scope.req[ pre ] = $('#'+pre).html();
+            $('#'+pre).trumbowyg('destroy');
+            $('#'+pre).empty();
+        }
 
-        wnd_current = wnd;
-        if ((wnd == 'desc') || (wnd == 'comment'))
-            $("#contentWnd").css("height", '580px').trumbowyg().trumbowyg('html', $scope.req[ wnd ]);
+        wnd_current = cur;
+        if ((cur == 'desc') || (cur == 'comment'))
+            $('#'+cur).css("height", '580px').trumbowyg().trumbowyg('html', $scope.req[ cur ]);
         else 
         {
-            $('#contentWnd').trumbowyg('destroy');
-            $('#contentWnd').empty();
+            if (cur == 'src')
+                sources_display();
         }            
     }
-    window_switch('desc');
+    window_switch(null, 'desc');
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+        let pre = $(event.relatedTarget).attr('href').substr(1);
+        let cur = $(event.target).attr('href').substr(1);
+
+        $(".tab-pane").removeClass('show active');
+        $('#'+cur).addClass('show active');
+        window_switch(pre, cur);
+    })
+
 
     $scope.edit = () =>
     {
         /* 更新当前串口的值（desc, comment） */
-        $scope.req[ wnd_current ] = $("#contentWnd").html();
+        if ((wnd_current == 'desc') || (wnd_current == 'comment'))
+            $scope.req[ wnd_current ] = $('#'+wnd_current).html();
 
         /* 检查基础信息 */
         if (!$scope.category_sel['id'] || !$scope.importance_sel['id'])
@@ -155,11 +169,10 @@ function appCtrl($scope, $http)
             toastr.success('success');
 
             let ret = res.data.message;
-            if ((wnd_current == 'desc') || (wnd_current == 'comment'))
-                $('#contentWnd').trumbowyg('empty');
             $scope.req = {'id':'', 'title':'', 'desc':'', 'comment':''};
 
             req_refresh();
+            window_switch(null, wnd_current);
         });
     }
 
@@ -199,11 +212,11 @@ function appCtrl($scope, $http)
             break;
         }
 
+        console.log(edit_obj);
         category_change(edit_obj['seRequirementCategoryId']);
         importance_change(edit_obj['importance']);
         $scope.req = edit_obj;
-        if ((wnd_current == 'desc') || (wnd_current == 'comment'))
-            $("#contentWnd").css("height", '580px').trumbowyg().trumbowyg('html', $scope.req[ wnd_current ]);
+        window_switch(null, wnd_current);
     }
 
     $scope.delete = () =>
@@ -215,11 +228,55 @@ function appCtrl($scope, $http)
         .then((res) => {
             if (errorCheck(res)) return ;
 
-            if ((wnd_current == 'desc') || (wnd_current == 'comment'))
-                $('#contentWnd').trumbowyg('empty');
             $scope.req = {'id':'', 'title':'', 'desc':'', 'comment':''};
 
             req_refresh();
+            window_switch(null, wnd_current);
         });
+    }
+
+    function sources_display()
+    {
+        let ids = $scope.req['sources'] ? 
+            $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
+
+        $http
+        .get('/software_engineering/requirement/ids', {params:ids})
+        .then((res)=>{
+            if (errorCheck(res)) return ;
+
+            let ret = res.data.message;
+            $scope.src_list = ret;
+        });
+    }
+
+    $scope.unlink = (type, id) => 
+    {
+        if (type == 'src')
+        {
+            let ids = $scope.req['sources'] ? 
+                $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
+            let idx = ids.indexOf(id);
+            ids.splice(idx, 1);
+            $scope.req['sources'] = ' '+ids.join(' ')+' ';
+            sources_display(ids);
+        }
+    }
+
+    /* 将所有搜索结果的需求添加到关联中 */
+    $scope.sources_add = () =>
+    {
+        let res = [];
+        for (let i = 0; i < $scope.req_search.length; i++)
+            res.push($scope.req_search[i]['id']);
+        
+        let org_list = $scope.req['sources'] ? 
+            $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
+        
+        let ids = org_list.concat(res);
+        $scope.req['sources'] = ids.join(' ');
+
+        if (wnd_current == 'src')
+            sources_display(ids);
     }
 }

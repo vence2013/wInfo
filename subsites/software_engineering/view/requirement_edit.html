@@ -87,29 +87,35 @@
                         </div>
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('desc')">需求描述</a>
+                                <a class="nav-link active" data-toggle="tab" role="tab" href="#desc">需求描述</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('comment')">额外说明</a>
+                                <a class="nav-link" data-toggle="tab" role="tab" href="#comment">额外说明</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('src')">需求关系（来源于）</a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('dst')">需求关系（派生出）</a>
+                                <a class="nav-link" data-toggle="tab" role="tab" href="#src">需求关系（来源于）</a>
                             </li>
                         </ul>
                         
-                        <div class="mt-3">
-                            <div id="contentWnd"></div>
-                        </div>                        
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane fade show active" id="desc" role="tabpanel"></div>
+                            <div class="tab-pane fade" id="comment" role="tabpanel"></div>
+                            <div class="tab-pane fade req_list" id="src" role="tabpanel">
+                                <div ng-repeat="x in src_list">
+                                    <span class="id i{{x.importance}}">{{x.id}}</span>
+                                    <span class="title">{{x.title}}</span>
+                                    
+                                    <a href="#"><i class="fa fa-unlink" ng-click="unlink('src', x.id)"></i></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-5 border rounded mr-3">
                 <div class="row mt-3">
                     <div class="col-auto">
-                        <button type="button" class="btn btn-success">关联需求</button>
+                        <button type="button" class="btn btn-success" ng-click="sources_add();">关联需求</button>
                         <div class="btn-group dropright">
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">需求目录</button>
                             <div class="dropdown-menu">
