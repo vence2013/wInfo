@@ -54,24 +54,19 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col pr-0">
+                    <div class="col">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">编号</span>
                             </div>
-                            <input type="text" class="form-control" ng-model="req.id">
+                            <input type="text" class="form-control" ng-model="req.id" ng-disabled="req.createdAt">
                         </div>
                     </div>
-                    <div class="col-2 pr-0">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">版本</span>
-                            </div>
-                            <input type="text" class="form-control text-center" ng-model="req.ver">
-                        </div>
+                    <div class="col-1 pl-0">
+                        <button type="button" class="btn btn-danger btn-block" ng-click="delete()" ng-show="req.createdAt">删除</button>
                     </div>
-                    <div class="col-2">
-                        <button type="button" class="btn btn-primary btn-block" ng-click="edit()">{{req.createdAt ? '编辑提交' : '新增提交'}}</button>
+                    <div class="col-1 pl-0">
+                        <button type="button" class="btn btn-primary btn-block" ng-click="edit()">{{req.createdAt ? '编辑' : '新增'}}</button>
                     </div>
                 </div>
                 <div class="row">
@@ -86,25 +81,74 @@
                 </div>
                 <div class="row">
                     <div class="col">
+                        <div class="req_nav edit_nav">
+                            <a href="/software_engineering/view/requirement_category.html">目录编辑</a>
+                            <a href="/software_engineering/view/requirement.html">需求浏览</a>
+                        </div>
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" role="tab" href="#">需求描述</a>
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('desc')">需求描述</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" role="tab" href="#">额外说明</a>
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('comment')">额外说明</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#">需求关系（来源于）</a>
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('src')">需求关系（来源于）</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#">需求关系（派生出）</a>
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" role="tab" href="#" ng-click="window_switch('dst')">需求关系（派生出）</a>
                             </li>
                         </ul>
-                        <div class="mt-3" id="contentWnd"></div>                        
+                        
+                        <div class="mt-3">
+                            <div id="contentWnd"></div>
+                        </div>                        
                     </div>
                 </div>
             </div>
-            <div class="col-5 border rounded mr-3">search</div>
+            <div class="col-5 border rounded mr-3">
+                <div class="row mt-3">
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-success">关联需求</button>
+                        <div class="btn-group dropright">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">需求目录</button>
+                            <div class="dropdown-menu">
+                                <!-- Dropdown menu links -->
+                                <div class="dropdown-item" ng-repeat="x in category_list" ng-click="search_cat(x.id)">{{x.title}}</div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="col" style="padding-top:8px">{{cat_title}}</div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-4 pr-0">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">ID列表</span>
+                            </div>
+                            <input type="text" class="form-control" ng-model="search.ids" placeholder="一个或多个，空格分开">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">内容搜索</span>
+                            </div>
+                            <input type="text" class="form-control" ng-model="search.str" placeholder="一个或多个，空格分开">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col req_list">
+                        <div ng-repeat="x in req_search">
+                            <span class="id i{{x.importance}}">{{x.id}}</span>
+                            <span class="title">{{x.title}}</span>
+                            
+                            <a href="#"><i class="fa fa-edit" ng-click="edit_request(x.id)"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

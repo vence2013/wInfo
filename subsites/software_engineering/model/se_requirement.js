@@ -17,13 +17,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BLOB, 
             allowNull: false, 
         },
-        version: { 
+        importance: { 
             type: DataTypes.INTEGER
         },
-        rate: { 
-            type: DataTypes.INTEGER
-        },
-        source: {
+        sources: {
             type: DataTypes.STRING(255)  // 来源于其他需求的ID列表，用','隔开
         },
     }, {

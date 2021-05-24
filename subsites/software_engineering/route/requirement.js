@@ -6,14 +6,39 @@ router.post('/', async (ctx)=>{
     const requirementCtrl = ctx.controls['software_engineering/requirement'];
 
     /* 提取有效的参数 */
-    var req = ctx.request.body;
-    console.log(req);
-    var cat = req.name;
+    let req = ctx.request.body;
+    let id = req.id.trim();
+    let title = req.title.trim();
 
-    //var ret = await CategoryCtrl.create(ctx, father, name);
+    let ret = await requirementCtrl.create(ctx, id, title, req);
     if (ret) ctx.body = {'error':  0, 'message': ret};
     else     ctx.body = {'error': -1, 'message': '添加失败！'};
 })
+
+router.get('/', async (ctx)=>{
+    const requirementCtrl = ctx.controls['software_engineering/requirement'];
+
+    /* 提取有效的参数 */
+    let req = ctx.query;
+    let category = parseInt(req.category);
+    let ids = req.ids.replace(/\s+/g, ' ').split(' ');
+    let str = req.str.replace(/\s+/g, ' ').split(' ');
+
+    let ret = await requirementCtrl.search(ctx, category, ids, str);
+    ctx.body = {'error': 0, 'message': ret};
+})
+
+router.delete('/:id', async (ctx) =>
+{
+    const requirementCtrl = ctx.controls['software_engineering/requirement'];
+
+    var req2 = ctx.params;
+    var id = req2.id;
+    
+    await requirementCtrl.delete(ctx, id);
+
+    ctx.body = {'error': 0, 'message': 'SUCCESS'};
+});
 
 
 module.exports = router;

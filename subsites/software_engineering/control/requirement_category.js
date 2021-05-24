@@ -41,7 +41,7 @@ function build_tree(nodes, father)
 
     /* 为子节点排序 */
     children.sort((a, b)=> { 
-        return (a['order'] >= b['order']); 
+        return (a['name'] > b['name']); 
     });
 
     return children;
@@ -110,6 +110,7 @@ exports.edit = async (ctx, id, name) =>
 
 /* 获取某个目录节点的子树数据，并以数组形式给出
  */
+exports.get_sub_tree_nodes = get_sub_tree_nodes;
 async function get_sub_tree_nodes(ctx, rootid) 
 {
     const Category = ctx.models['se_requirement_category'];
