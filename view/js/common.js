@@ -58,12 +58,12 @@ function pageSet(total, size, view, cur)
 function errorCheck(response) {
     if (response && response.data && /^[\-0-9]+$/.test(response.data.error)) {
         if (response.data.error) 
-            toastr.info('错误信息：'+response.data.message, '', {"positionClass": "toast-bottom-right"});
+            toastr.error('错误信息：'+response.data.message, '', {"positionClass": "toast-bottom-right"});
         else
             return false;
     } else {
         console.log('未知错误：%o', response);
-        toastr.info('未知错误：'+JSON.stringify(response), '', {"positionClass": "toast-bottom-right"});        
+        toastr.error('未知错误：'+JSON.stringify(response), '', {"positionClass": "toast-bottom-right"});        
     }
     return true;
 }

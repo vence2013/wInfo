@@ -184,7 +184,7 @@ function appCtrl($scope, $http)
         $scope.search['category'] = id_cat;
     }
 
-    $scope.search = {'category':0, 'ids':'', 'str':''};
+    $scope.search = {'category':0, 'ids':'', 'str':'', 'page':26};
     $scope.cat_title = '';
     function req_refresh()
     {
@@ -212,7 +212,6 @@ function appCtrl($scope, $http)
             break;
         }
 
-        console.log(edit_obj);
         category_change(edit_obj['seRequirementCategoryId']);
         importance_change(edit_obj['importance']);
         $scope.req = edit_obj;

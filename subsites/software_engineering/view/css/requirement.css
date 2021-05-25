@@ -15,3 +15,5 @@
 .req_list>div>span { margin-right: 5px; }
 .req_list>div>a { cursor: pointer; margin-left: 5px; }
 .req_list>div>a:active { color: #ff0000; }
+
+#src { height: 600px; overflow: auto; }

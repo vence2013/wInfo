@@ -20,11 +20,12 @@ router.get('/', async (ctx)=>{
 
     /* 提取有效的参数 */
     let req = ctx.query;
+    let page = parseInt(req.page);
     let category = parseInt(req.category);
     let ids = req.ids.replace(/\s+/g, ' ').split(' ');
-    let str = req.str.replace(/\s+/g, ' ').split(' ');
+    let str = req.str.replace(/\s+/g, ' ').split(' ');    
 
-    let ret = await requirementCtrl.search(ctx, category, ids, str);
+    let ret = await requirementCtrl.search(ctx, category, ids, str, page);
     ctx.body = {'error': 0, 'message': ret};
 })
 

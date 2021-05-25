@@ -23,6 +23,8 @@ exports.create = async (ctx, id, title, req) =>
     } else {
         let items = {};
 
+        items['title'] = title;
+        items['seRequirementCategoryId'] = req.category;
         items['desc']  = req.desc;
         items['comment']  = req.comment;
         items['importance'] = req.importance;
@@ -30,9 +32,11 @@ exports.create = async (ctx, id, title, req) =>
 
         let [ins, created] = await Requirement.findOrCreate({
             logging:false, 
-            where: {'id':id, 'title':title, 'seRequirementCategoryId':req.category},
+            where: {'id':id},
             defaults: items
         });
+
+        if (!created)  return ;
     }
 
     return await Requirement.findOne({
@@ -51,7 +55,7 @@ exports.delete = async(ctx, id) =>
     });
 }
 
-exports.search = async (ctx, category, ids, str) => 
+exports.search = async (ctx, category, ids, str, page) => 
 {
     const Requirement = ctx.models['se_requirement'];
     const CategoryCtrl = ctx.controls['software_engineering/requirement_category'];
@@ -99,7 +103,7 @@ exports.search = async (ctx, category, ids, str) =>
         raw:true, logging:false,
         where:where_cond,
         order:[['updatedAt', 'DESC']],
-        limit: 20
+        limit: page
     });
 
     /* 将数组转换为字符串 */
