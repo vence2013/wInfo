@@ -54,5 +54,42 @@ router.delete('/:id', async (ctx) =>
     ctx.body = {'error': 0, 'message': 'SUCCESS'};
 });
 
+router.get('/view/:id_prj', async (ctx)=>{
+    const requirementCtrl = ctx.controls['software_engineering/requirement'];
+
+    var req2 = ctx.params;
+    var id_prj = req2.id_prj;
+
+
+    let data = {
+        "nodes":[
+          {"name":"a"},
+          {"name":"b"},
+          {"name":"c"},
+          {"name":"d"},
+          {"name":"e"},
+          {"name":"f"},
+          {"name":"g"}
+        ],
+        "links":[
+          {"source":1,"target":2},
+          {"source":2,"target":3},/*
+          {"source":3,"target":4},
+          {"source":0,"target":1},
+          {"source":2,"target":0},
+          {"source":3,"target":5},
+          {"source":0,"target":5}*/
+        ],
+        "groups":[
+          {"leaves":[0], "groups":[1]},
+          {"leaves":[1,2]},
+          {"leaves":[3,4]}
+        ]
+    };
+
+    let ret = await requirementCtrl.get_view_data(ctx, id_prj);
+    ctx.body = {'error': 0, 'message': ret};
+})
+
 
 module.exports = router;

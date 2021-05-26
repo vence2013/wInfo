@@ -6,18 +6,6 @@ exports.create = async (ctx, fid, name) => {
         where: {'name':name, 'father':fid}
     });
 
-    /* 为顶级目录（产品）添加固定的子目录 */
-    if (0 == parseInt(fid))
-    {
-        let e = ins.get({'plain':true});
-        let sub_fixed = [
-            {'father':e.id, 'name':'产品需求（Product Requirements）'}, 
-            {'father':e.id, 'name':'功能需求（Functional Requirements）'}, 
-        ];
-
-        await Category.bulkCreate(sub_fixed) ;
-    }
-
     return ins.get({plain: true});
 }
 

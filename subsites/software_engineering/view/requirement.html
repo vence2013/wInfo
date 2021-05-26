@@ -4,8 +4,14 @@
     <meta charset="utf-8">
     <script src="/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script> 
     <script src="/node_modules/angular/angular.min.js" type="text/javascript"></script>
+    <!-- Bootstrap -->
+    <script src="/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <!-- font-awesome -->
-    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />  
+    <link  href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- d3 & webcola -->
+	<script src="/node_modules/d3/build/d3.js"></script>
+	<script src="/node_modules/webcola/WebCola/cola.min.js"></script>
 
     <!-- 自定义 -->   
     <title>需求分析</title>
@@ -16,8 +22,18 @@
 <body ng-app="app">
     <div ng-include="'/view/header.html'"></div>
     <div id="wrapper" class="container-fluid" ng-controller="appCtrl">
-        <a href="/software_engineering/view/requirement_category.html">目录编辑</a>
-        <a href="/software_engineering/view/requirement_edit.html">需求编辑</a>
+        <div class="req_nav nav_view">
+            <a href="/software_engineering/view/requirement_category.html">目录编辑</a>
+            <a href="/software_engineering/view/requirement_edit.html">需求编辑</a>
+            <div class="btn-group ml-2">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">{{project_sel.name}}</button>
+                <div class="dropdown-menu">
+                    <!-- Dropdown menu links -->
+                    <div class="dropdown-item" ng-repeat="x in project_lst" ng-click="project_change(x.id)">{{x.name}}</div>
+                </div>
+            </div>            
+        </div>
+        <div class="view_container mt-3 mx-2"></div>
     </div>
 
 </body>

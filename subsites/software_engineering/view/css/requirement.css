@@ -1,4 +1,4 @@
-.req_nav { line-height: 30px; text-align: right; }
+.req_nav { line-height: 30px; text-align: right; opacity: 0.8; }
 .req_nav>a { font-style: italic; margin-left: 10px; color: rgb(172, 147, 8); font-weight: bold; }
 
 /* category */
@@ -17,3 +17,14 @@
 .req_list>div>a:active { color: #ff0000; }
 
 #src { height: 600px; overflow: auto; }
+
+/* requirement */
+.nav_view { position: fixed; right: 10px; top:60px; z-index: 999; }
+.view_container { border: 1px dashed #cccccc; border-radius: 5px; }
+
+/* svg style */
+.background { stroke: white; stroke-width: 1px; fill: white; }
+.node  { stroke: #fff; stroke-width: 1px; cursor: move; }
+.group { stroke: #fff; stroke-width: 1px; opacity: 0.7; }
+.link  { stroke: #7a4e4e; stroke-width: 3px; stroke-opacity: 1; }
+.label { cursor: move; }

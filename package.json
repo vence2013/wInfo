@@ -25,6 +25,7 @@
     "angular-tree-control": "^0.2.30",
     "bootstrap": "^4.6.0",
     "cheerio": "^1.0.0-rc.6",
+    "d3": "^4.4.0",
     "dotenv": "^8.2.0",
     "editor.md": "^1.5.0",
     "font-awesome": "^4.7.0",
@@ -43,12 +44,14 @@
     "magnific-popup": "^1.1.0",
     "moment": "^2.29.1",
     "mysql2": "^2.0.1",
+    "node-gyp-install": "^2.2.0",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "sequelize": "^5.21.2",
     "shelljs": "^0.8.4",
     "toastr": "^2.1.4",
     "trumbowyg": "^2.23.0",
-    "underscore": "^1.12.1"
+    "underscore": "^1.12.1",
+    "webcola": "^3.4.0"
   }
 }

@@ -1,74 +1,68 @@
-angular
-.module('app', [])
-.controller('appCtrl', appCtrl);
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Grouped Layout</title>
+	
+	<script src="/node_modules/d3/build/d3.js"></script>
+	<script src="/node_modules/webcola/WebCola/cola.min.js"></script>
+	<style>
+	.node {
+	  stroke: #fff;
+	  stroke-width: 1.5px;
+		cursor: move;
+	}
 
+	.group {
+	  stroke: #fff;
+	  stroke-width: 1.5px;
+	  cursor: move;
+	  opacity: 0.7;
+	}
 
-/* cola初始化 */
-var height = $(window).height() - 70; // header 
-var width  = $(window).width() - 30;
+	.link {
+	  stroke: #7a4e4e;
+	  stroke-width: 3px;
+	  stroke-opacity: 1;
+	}
 
-var cola  = cola.d3adaptor(d3)
-    .linkDistance(20)
-    .avoidOverlaps(true)
-    .handleDisconnected(false)
-    .size([width, height]);
+	.label {
+		fill: white;
+		font-family: Verdana;
+		font-size: 25px;
+		text-anchor: middle;
+		cursor: move;
+	}
+	</style>
+</head>
 
+<body>
+	<h1>Layout with hierarchical grouping</h1>
+	该图具有在节点上定义的分层分组。 我们生成约束以使不相交的组的边界框不重叠，并使嵌套的组完全包含在其父级的边界框中。 尝试拖动节点，使其碰到其他节点和组。
+</body>
+</html>
+<script>
+    var width = 960,
+        height = 500;
 
-function appCtrl($scope, $http) 
-{
-    /* 获取所有项目节点 */
-    $scope.project_lst = [];
-    $scope.project_sel = {'id':0, 'name':'请选择任一项目'};
-    function get_projects()
-    {
-        $http
-        .get('/software_engineering/requirement_category/project')
-        .then((res) => {
-            if (errorCheck(res)) return ;
-
-            let ret = res.data.message;
-            $scope.project_lst = ret;
-
-            let id_prj = locals_read('/software_engineering/requirement/project_sel');
-            project_change(id_prj);
-        });
-    }
-    get_projects();
-
-    $scope.project_change = project_change;
-    function project_change(id_prj)
-    {
-        /* 从项目列表中查找选中的项目 */
-        for (i = 0; i < $scope.project_lst.length; i++)
-        {
-            if ($scope.project_lst[i]['id'] != id_prj) continue;
-            $scope.project_sel = $scope.project_lst[i];
-            locals_write('/software_engineering/requirement/project_sel', $scope.project_sel['id']);
-            break;
-        }
-    }
-
-    /*************************************************************************
-     *  Draw                                                                 *
-     *************************************************************************/
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var svg = d3.select(".view_container").append("svg")
+    var cola = cola.d3adaptor(d3)
+        .linkDistance(80)
+        .avoidOverlaps(true)
+        .handleDisconnected(false)
+        .size([width, height]);
+
+    var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
-    
-    let id_prj = locals_read('/software_engineering/requirement/project_sel');
 
-    $http
-    .get('/software_engineering/requirement/view/'+id_prj)
-    .then((res) => {
-        if (errorCheck(res)) return ;
+    d3.json("smallgrouped.json", function (error, graph) {
 
-        let graph = res.data.message;
-
-        graph.nodes.forEach(function (v) { v.width = 60; v.height = 30;  })
+        graph.nodes.forEach(function (v) {
+            v.width = v.height = 95;
+        })
         graph.groups.forEach(function (g) { g.padding = 0.01; });
-
         cola
             .nodes(graph.nodes)
             .links(graph.links)
@@ -77,20 +71,20 @@ function appCtrl($scope, $http)
 
         var group = svg.selectAll(".group")
             .data(graph.groups)
-            .enter().append("rect")
+          .enter().append("rect")
             .attr("rx", 8).attr("ry", 8)
             .attr("class", "group")
             .style("fill", function (d, i) { return color(i); });
 
         var link = svg.selectAll(".link")
             .data(graph.links)
-            .enter().append("line")
+          .enter().append("line")
             .attr("class", "link");
 
-        var pad = 2;
+        var pad = 20;
         var node = svg.selectAll(".node")
             .data(graph.nodes)
-            .enter().append("rect")
+          .enter().append("rect")
             .attr("class", "node")
             .attr("width", function (d) { return d.width - 2 * pad; })
             .attr("height", function (d) { return d.height - 2 * pad; })
@@ -102,17 +96,16 @@ function appCtrl($scope, $http)
                 cola.alpha(1); // fire it off again to satify gridify
             });
 
-            /*
         var label = svg.selectAll(".label")
             .data(graph.nodes)
-            .enter().append("text")
+           .enter().append("text")
             .attr("class", "label")
             .text(function (d) { return d.name; })
             .call(cola.drag);
 
         node.append("title")
             .text(function (d) { return d.name; });
-*/
+
         cola.on("tick", function () {
             link.attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
@@ -133,5 +126,5 @@ function appCtrl($scope, $http)
                      return d.y + h/4;
                  });
         });
-    })
-}
+    });
+</script>
