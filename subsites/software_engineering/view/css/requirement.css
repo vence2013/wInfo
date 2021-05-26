@@ -1,5 +1,5 @@
 .req_nav { line-height: 30px; text-align: right; }
-.req_nav>a { font-style: italic; margin-left: 10px; }
+.req_nav>a { font-style: italic; margin-left: 10px; color: rgb(172, 147, 8); font-weight: bold; }
 
 /* category */
 .edit_card { position: fixed; top: 50px; right: 10px; width: 500px; border: 2px solid #cccccc; border-radius: 5px; padding: 10px; }
