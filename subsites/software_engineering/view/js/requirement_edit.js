@@ -61,6 +61,8 @@ function appCtrl($scope, $http)
     {
         let idx = 0;
 
+        if ($scope.category_list.length == 0) return ; 
+
         /* 从目录列表中查找选中的目录 */
         for (let i = 0; i < $scope.category_list.length; i++)
         {
@@ -148,20 +150,23 @@ function appCtrl($scope, $http)
 
     $scope.edit = () =>
     {
+        let cat_id = locals_read('/software_engineering/requirement_edit/category_sel');
+
         /* 更新当前串口的值（desc, comment） */
         if ((wnd_current == 'desc') || (wnd_current == 'comment'))
             $scope.req[ wnd_current ] = $('#'+wnd_current).html();
 
-        /* 检查基础信息 */
-        if (!$scope.category_sel['id'] || !$scope.importance_sel['id'])
+        /* 检查基础信息（新增节点是要求选择目录，编辑时不更改目录） */
+        if (!cat_id || !$scope.importance_sel['id'])
             return toastr.warning('请选择有效的产品和分类！');
         /* 检查需求信息 */
         if (!$scope.req['id'] || !$scope.req['title'])
             return toastr.warning('请输入有效的需求信息（编号，标题）！');
 
         let obj = Object.assign({}, $scope.req);
-        obj['category'] = $scope.category_sel['id'];
-        obj['importance']     = $scope.importance_sel['id'];
+        obj['category'] = cat_id;
+        obj['importance'] = $scope.importance_sel['id'];
+
         $http
         .post('/software_engineering/requirement', obj)
         .then((res)=>{
@@ -212,7 +217,7 @@ function appCtrl($scope, $http)
             break;
         }
 
-        category_change(edit_obj['seRequirementCategoryId']);
+        category_change(edit_obj['category_id']);
         importance_change(edit_obj['importance']);
         $scope.req = edit_obj;
         window_switch(null, wnd_current);

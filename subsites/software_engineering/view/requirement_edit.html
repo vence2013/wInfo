@@ -27,14 +27,14 @@
                 <div class="row">
                     <div class="col">
                         <div class="btn-group dropright">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">{{project_sel.name}}</button>
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" ng-disabled="req.createdAt">{{project_sel.name}}</button>
                             <div class="dropdown-menu">
                                 <!-- Dropdown menu links -->
                                 <div class="dropdown-item" ng-repeat="x in project_lst" ng-click="project_change(x.id)">{{x.name}}</div>
                             </div>
                         </div>
                         <div class="btn-group dropright ml-2">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">{{category_sel.title}}</button>
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" ng-disabled="req.createdAt">{{category_sel.title}}</button>
                             <div class="dropdown-menu">
                                 <!-- Dropdown menu links -->
                                 <div class="dropdown-item" ng-repeat="x in category_list" ng-click="category_change(x.id)">{{x.title}}</div>

@@ -12,3 +12,8 @@ document, file
 2. 结合bootstrap的nav效果，切换到没有编辑器的导航再切换回来，编辑器不见了！
 
 jquery-notebook是一个新不错的选择。
+
+转移数据
+~~~sql
+INSERT INTO `se_requirements` (`id`,`category_id`,`title`,`desc`,`comment`,`importance`,`sources`,`createdAt`,`updatedAt`) SELECT `id`,`seRequirementCategoryId`,`title`,`desc`,`comment`,`importance`,`sources`,`createdAt`,`updatedAt` FROM `se_requirements1`;
+~~~

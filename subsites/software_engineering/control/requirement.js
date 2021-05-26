@@ -10,7 +10,6 @@ exports.create = async (ctx, id, title, req) =>
         let items = {};
 
         items['title'] = title;
-        items['seRequirementCategoryId'] = req.category;
         items['desc']  = req.desc;
         items['comment']  = req.comment;
         items['importance'] = req.importance;
@@ -24,7 +23,6 @@ exports.create = async (ctx, id, title, req) =>
         let items = {};
 
         items['title'] = title;
-        items['seRequirementCategoryId'] = req.category;
         items['desc']  = req.desc;
         items['comment']  = req.comment;
         items['importance'] = req.importance;
@@ -32,7 +30,7 @@ exports.create = async (ctx, id, title, req) =>
 
         let [ins, created] = await Requirement.findOrCreate({
             logging:false, 
-            where: {'id':id},
+            where: {'id':id, 'category_id':req.category},
             defaults: items
         });
 
@@ -67,7 +65,7 @@ exports.search = async (ctx, category, ids, str, page) =>
     for (let i = 0; i < subs.length; i++)
         cat_ids.push(subs[i]['id']);
 
-    where_cond['seRequirementCategoryId'] = cat_ids;
+    where_cond['category_id'] = cat_ids;
 
     /* {'id': {
      *   [Op.or]:[
