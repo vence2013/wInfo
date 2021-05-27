@@ -7,8 +7,9 @@ angular
 var height = $(window).height() - 70; // header 
 var width  = $(window).width() - 30;
 
+var color = d3.scale.category20();
 var cola  = cola.d3adaptor(d3)
-    .linkDistance(20)
+    .linkDistance(60)
     .avoidOverlaps(true)
     .handleDisconnected(false)
     .size([width, height]);
@@ -51,87 +52,110 @@ function appCtrl($scope, $http)
     /*************************************************************************
      *  Draw                                                                 *
      *************************************************************************/
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-    var svg = d3.select(".view_container").append("svg")
+    var outer = d3.select(".view_container").append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .attr("pointer-events", "all");
+
+    outer.append('rect')
+        .attr('class', 'background')
+        .attr('width', "100%")
+        .attr('height', "100%")
+        .call(d3.behavior.zoom().on("zoom", redraw));
+
+    var vis = outer.append('g');
+    function redraw() {
+        vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+    }
     
-    let id_prj = locals_read('/software_engineering/requirement/project_sel');
+    var edgesLayer  = vis.append("g");
+    var nodesLayer  = vis.append("g");
+    var modelgraph, viewgraph = { nodes: [], links: [], groups:[]};
 
-    $http
-    .get('/software_engineering/requirement/view/'+id_prj)
-    .then((res) => {
-        if (errorCheck(res)) return ;
+    function click(node) {
+        console.log('cc');
+        update();
+    }
 
-        let graph = res.data.message;
+    function update() {
+        cola.nodes(viewgraph.nodes)
+            .links(viewgraph.links)
+            .groups(viewgraph.groups)
+            .start();
 
-        graph.nodes.forEach(function (v) { v.width = 60; v.height = 30;  })
-        graph.groups.forEach(function (g) { g.padding = 0.01; });
+        var link = edgesLayer
+            .selectAll(".link")
+            .data(viewgraph.links);
+        link.enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width", 2);
+        link.exit().remove();
 
-        cola
-            .nodes(graph.nodes)
-            .links(graph.links)
-            .groups(graph.groups)
-            .start(100, 0, 50, 50);
-
-        var group = svg.selectAll(".group")
-            .data(graph.groups)
-            .enter().append("rect")
+        var group = nodesLayer
+            .selectAll(".group")
+            .data(viewgraph.groups)
+        group.enter().append("rect")
             .attr("rx", 8).attr("ry", 8)
             .attr("class", "group")
             .style("fill", function (d, i) { return color(i); });
 
-        var link = svg.selectAll(".link")
-            .data(graph.links)
-            .enter().append("line")
-            .attr("class", "link");
+        var node = nodesLayer.selectAll(".node")
+            .data(viewgraph.nodes, function (d) { return d.viewgraphid; });
 
-        var pad = 2;
-        var node = svg.selectAll(".node")
-            .data(graph.nodes)
-            .enter().append("rect")
-            .attr("class", "node")
-            .attr("width", function (d) { return d.width - 2 * pad; })
-            .attr("height", function (d) { return d.height - 2 * pad; })
-            .attr("rx", 5).attr("ry", 5)
-            .style("fill", function (d) { return color(graph.groups.length); })
-            .call(cola.drag)
-            .on('mouseup', function (d) {
-                d.fixed = 0;
-                cola.alpha(1); // fire it off again to satify gridify
-            });
-
-            /*
-        var label = svg.selectAll(".label")
-            .data(graph.nodes)
-            .enter().append("text")
-            .attr("class", "label")
-            .text(function (d) { return d.name; })
+            
+        var enter = node.enter().append("g")
+            .on("touchmove", function () {
+                d3.event.preventDefault()
+            })
             .call(cola.drag);
 
-        node.append("title")
-            .text(function (d) { return d.name; });
+        var pad = 20;
+        enter.append("circle")
+            .attr("r", 5)
+            .attr("class", "node")
+            .text(function (d) { return d.label; });
+            //.attr("width", function (d) { return d.width - 2 * pad; })
+            //.attr("height", function (d) { return d.height - 2 * pad; })
+
+/*
+        enter.append("circle")
+            .attr("r", 5)
+            .on("click", function (d) { click(d) })
+            .on("touchend", function (d) { click(d) });
 */
+        node.style("fill", function (d) { return d.colour; })
+            .append("title")
+            .text(function (d) { return d.label; });
+
         cola.on("tick", function () {
             link.attr("x1", function (d) { return d.source.x; })
                 .attr("y1", function (d) { return d.source.y; })
                 .attr("x2", function (d) { return d.target.x; })
                 .attr("y2", function (d) { return d.target.y; });
 
-            node.attr("x", function (d) { return d.x - d.width / 2 + pad; })
-                .attr("y", function (d) { return d.y - d.height / 2 + pad; });
-
-            group.attr("x", function (d) { return d.bounds.x; })
-                 .attr("y", function (d) { return d.bounds.y; })
+            group
+                .attr("x", function (d) { return d.bounds.x; })
+                .attr("y", function (d) { return d.bounds.y; })
                 .attr("width", function (d) { return d.bounds.width(); })
                 .attr("height", function (d) { return d.bounds.height(); });
 
-            label.attr("x", function (d) { return d.x; })
-                 .attr("y", function (d) {
-                     var h = this.getBBox().height;
-                     return d.y + h/4;
-                 });
+            node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
         });
-    })
+    }
+
+    let id_prj = locals_read('/software_engineering/requirement/project_sel');
+    $http
+    .get('/software_engineering/requirement/view/'+id_prj)
+    .then((res) => {
+        if (errorCheck(res)) return ;
+
+        modelgraph = res.data.message;
+        viewgraph['nodes'] = modelgraph['nodes'].map((x, idx) => { 
+            x['viewgraphid'] = idx; 
+            x['width'] = x['height'] = 20; 
+            return x;
+        });
+        viewgraph['groups'] = modelgraph['groups'].map((x, idx) => { return x; });
+        update();
+    });
 }

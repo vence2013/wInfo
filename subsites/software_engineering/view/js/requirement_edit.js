@@ -241,8 +241,8 @@ function appCtrl($scope, $http)
 
     function sources_display()
     {
-        let ids = $scope.req['sources'] ? 
-            $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
+        let str = $scope.req['sources'] ? $scope.req['sources'].trim() : '';
+        let ids = str ? str.replace(/\s+/g, ' ').split(' ') : [];
 
         $http
         .get('/software_engineering/requirement/ids', {params:ids})
@@ -254,17 +254,14 @@ function appCtrl($scope, $http)
         });
     }
 
-    $scope.unlink = (type, id) => 
+    $scope.unlink = (id) => 
     {
-        if (type == 'src')
-        {
-            let ids = $scope.req['sources'] ? 
-                $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
-            let idx = ids.indexOf(id);
-            ids.splice(idx, 1);
-            $scope.req['sources'] = ' '+ids.join(' ')+' ';
-            sources_display(ids);
-        }
+        let str = $scope.req['sources'] ? $scope.req['sources'].trim() : '';
+        let ids = str ? str.replace(/\s+/g, ' ').split(' ') : [];
+        let idx = ids.indexOf(id);
+        ids.splice(idx, 1);
+        $scope.req['sources'] = ' '+ids.join(' ')+' ';
+        sources_display(ids);
     }
 
     /* 将所有搜索结果的需求添加到关联中 */
@@ -272,13 +269,13 @@ function appCtrl($scope, $http)
     {
         let res = [];
         for (let i = 0; i < $scope.req_search.length; i++)
-            res.push($scope.req_search[i]['id']);
+            res.push($scope.req_search[i]['category_id']+'/'+$scope.req_search[i]['id']);
         
         let org_list = $scope.req['sources'] ? 
             $scope.req['sources'].replace(/\s+/g, ' ').split(' ') : [];
         
         let ids = org_list.concat(res);
-        $scope.req['sources'] = ids.join(' ');
+        $scope.req['sources'] = ' '+ids.join(' ')+' ';
 
         if (wnd_current == 'src')
             sources_display(ids);

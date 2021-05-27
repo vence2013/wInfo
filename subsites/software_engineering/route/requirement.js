@@ -34,9 +34,14 @@ router.get('/ids', async (ctx)=>{
 
     /* 提取有效的参数 */
     let req = ctx.query;
+
     let ids = [];
+    /* 分割category_id, id */
     for (k in req) 
-        ids.push(req[k]);
+    {
+        let ret = req[k].split('/');
+        ids.push({'category_id':ret[0], 'id':ret[1]});
+    }        
 
     let ret = await requirementCtrl.get_by_ids(ctx, ids);
     ctx.body = {'error': 0, 'message': ret};
@@ -60,25 +65,24 @@ router.get('/view/:id_prj', async (ctx)=>{
     var req2 = ctx.params;
     var id_prj = req2.id_prj;
 
-
-    let data = {
+    let ret = {
         "nodes":[
-          {"name":"a"},
-          {"name":"b"},
-          {"name":"c"},
-          {"name":"d"},
-          {"name":"e"},
-          {"name":"f"},
-          {"name":"g"}
+          {"name":"a","width":60,"height":40},
+          {"name":"b","width":60,"height":40},
+          {"name":"c","width":60,"height":40},
+          {"name":"d","width":60,"height":40},
+          {"name":"e","width":60,"height":40},
+          {"name":"f","width":60,"height":40},
+          {"name":"g","width":60,"height":40}
         ],
         "links":[
           {"source":1,"target":2},
-          {"source":2,"target":3},/*
+          {"source":2,"target":3},
           {"source":3,"target":4},
           {"source":0,"target":1},
           {"source":2,"target":0},
           {"source":3,"target":5},
-          {"source":0,"target":5}*/
+          {"source":0,"target":5}
         ],
         "groups":[
           {"leaves":[0], "groups":[1]},
@@ -86,8 +90,7 @@ router.get('/view/:id_prj', async (ctx)=>{
           {"leaves":[3,4]}
         ]
     };
-
-    let ret = await requirementCtrl.get_view_data(ctx, id_prj);
+    //let ret = await requirementCtrl.get_view_data(ctx, id_prj);
     ctx.body = {'error': 0, 'message': ret};
 })
 

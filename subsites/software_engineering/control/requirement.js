@@ -120,7 +120,7 @@ exports.get_by_ids = async (ctx, ids) =>
 
     let ret = await Requirement.findAll({
         raw:true, logging:false,
-        where:{'id':ids}
+        where:{[Op.or]:ids}
     });
 
     return ret;
@@ -157,16 +157,16 @@ exports.get_view_data = async (ctx, id_prj) =>
     }
 
     /* 搜索所有需求 */
-    let ret = await Requirement.findAll({
+    let nodes_org = await Requirement.findAll({
         raw:true, logging:false,
         where:{'category_id':category_all}
     });
     let nodes = [];
     let nodes_idx = [];
-    for (let i = 0; i < ret.length; i++)
+    for (let i = 0; i < nodes_org.length; i++)
     {
-        nodes_idx.push(ret[i]['id']);
-        nodes.push({'name':ret[i]['id']});
+        nodes_idx.push(nodes_org[i]['category_id']+'/'+nodes_org[i]['id']);
+        nodes.push({'name':nodes_org[i]['id'], 'label':nodes_org[i]['title']});
     }
 
     /* 查找该目录包含的子目录 
@@ -207,7 +207,7 @@ exports.get_view_data = async (ctx, id_prj) =>
     for (let i = 0; i < category_no_root.length; i++)
     {
         let id  = category_no_root[i];
-        let obj = {'id':id};
+        let obj = {};
 
         /* 查找属于该目录的节点 */
         let leaves = [];
@@ -217,7 +217,11 @@ exports.get_view_data = async (ctx, id_prj) =>
             where:{'category_id':id}
         });
         for (let j = 0; j < ret.length; j++)
-            leaves.push(nodes_idx.indexOf(ret[j]['id']));
+        {
+            let v = id+'/'+ret[j]['id'];
+            leaves.push(nodes_idx.indexOf(v));
+        }
+            
         if (leaves.length > 0)
             obj['leaves'] = leaves;
 
@@ -237,5 +241,20 @@ exports.get_view_data = async (ctx, id_prj) =>
             groups.push(obj);
     }
 
-    return {'nodes':nodes, 'links':[], 'groups':groups};
+    /* 查找连接 */
+    let links = [];
+    for (let i = 0; i < nodes_org.length; i++)
+    {
+        let src = nodes_org[i]['sources'];
+
+        if (!src) continue;
+        let arr = src.trim().replace(/\s+/g, ' ').split(' ');
+        for (let j = 0; j < arr.length; j++)
+        {
+            let idx = nodes_idx.indexOf(arr[j]);
+            links.push({'source':i, 'target':idx});
+        }        
+    }
+
+    return {'nodes':nodes, 'links':links, 'groups':groups};
 }
