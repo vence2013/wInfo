@@ -65,6 +65,7 @@ router.get('/view/:id_prj', async (ctx)=>{
     var req2 = ctx.params;
     var id_prj = req2.id_prj;
 
+    /*
     let ret = {
         "nodes":[
           {"name":"a","width":60,"height":40},
@@ -90,7 +91,8 @@ router.get('/view/:id_prj', async (ctx)=>{
           {"leaves":[3,4]}
         ]
     };
-    //let ret = await requirementCtrl.get_view_data(ctx, id_prj);
+    */
+    let ret = await requirementCtrl.get_view_data(ctx, id_prj);
     ctx.body = {'error': 0, 'message': ret};
 })
 
