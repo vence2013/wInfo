@@ -34,7 +34,18 @@
                 </div>
             </div>            
         </div>
-        <div class="view_container mt-3 mx-2"></div>
+        <div class="view_container"></div>
+
+        <div class="detail" ng-show='req_detail'>
+            <div>
+                <span>{{req_detail.id}}</span>
+                <span>{{req_detail.importance}}</span>
+                <span>{{req_detail.sources}}</span>
+            </div>
+            <div>{{req_detail.title}}</div>
+            <div class="desc"></div>
+            <div class="comment"></div>
+        </div>
     </div>
 
 </body>

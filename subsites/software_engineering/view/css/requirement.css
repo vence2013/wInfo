@@ -20,13 +20,24 @@
 
 /* requirement */
 .nav_view { position: fixed; right: 10px; top:60px; z-index: 999; }
-.view_container { border: 1px dashed #cccccc; border-radius: 5px; }
+.view_container { border: 2px solid #888; border-radius: 5px; margin-top: 50px; }
 
 /* svg style */
 .background { stroke: white; stroke-width: 1px; fill: white; }
 .node  { stroke: #fff; stroke-width: 1px; cursor: move; }
 .group { stroke: #fff; stroke-width: 1px; opacity: 0.7; }
-.link  { stroke: #7a4e4e; stroke-width: 3px; stroke-opacity: 1; z-index: 999; }
+.link  { stroke: #7a4e4e; stroke-width: 3px; stroke-opacity: 1; }
 .label { cursor: move; }
 
 .label { width: 30px; height: 100px; }
+
+.detail { 
+    position: fixed; bottom: 10px; left: 10px; 
+    z-index: 999; opacity: 0.7; 
+    border: 1px dashed #cccccc; border-radius: 5px; 
+    line-height: 25px; background-color: #fff;
+    max-width: 600px;
+}
+.detail>div { margin: 5px 10px; }
+.detail>div:not(:last-child) { border-bottom: 1px dashed #cccccc; }
+.detail>div:nth-child(1)>span { margin-left: 10px; }

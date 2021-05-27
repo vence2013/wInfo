@@ -123,6 +123,13 @@ exports.get_by_ids = async (ctx, ids) =>
         where:{[Op.or]:ids}
     });
 
+    /* 转换desc和comment为字符串 */
+    for (let i = 0; i < ret.length; i++)
+    {
+        ret[i]['desc'] = ret[i]['desc'].toString();
+        ret[i]['comment'] = ret[i]['comment'].toString();
+    }
+
     return ret;
 }
 
@@ -166,7 +173,7 @@ exports.get_view_data = async (ctx, id_prj) =>
     for (let i = 0; i < nodes_org.length; i++)
     {
         nodes_idx.push(nodes_org[i]['category_id']+'/'+nodes_org[i]['id']);
-        nodes.push({'name':nodes_org[i]['id'], 'label':nodes_org[i]['title']});
+        nodes.push({'name':nodes_org[i]['id'], 'label':nodes_org[i]['title'], 'category_id':nodes_org[i]['category_id']});
     }
 
     /* 查找该目录包含的子目录 

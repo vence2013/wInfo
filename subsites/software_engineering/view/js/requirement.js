@@ -4,8 +4,8 @@ angular
 
 
 /* cola初始化 */
-var height = $(window).height() - 70; // header 
-var width  = $(window).width() - 30;
+var height = $(window).height() - 80; // header 
+var width  = $(window).width() - 40;
 
 var color = d3.scale.category20();
 var cola  = cola.d3adaptor(d3)
@@ -48,9 +48,27 @@ function appCtrl($scope, $http)
         }
     }
 
+    $scope.req_detail = null;
+    function detail(req_id)
+    {
+        $http
+        .get('/software_engineering/requirement/ids', {params:[req_id]})
+        .then((res)=>{
+            if (errorCheck(res)) return ;
+
+            let ret = res.data.message;
+            $scope.req_detail = ret[0];
+            $(".detail>.desc").html(ret[0]['desc']);
+            $(".detail>.comment").html(ret[0]['comment']);
+        });
+    }
+
     /*************************************************************************
      *  Draw                                                                 *
      *************************************************************************/
+    var cfg_max_line_word = 15;
+    var cfg_pad = 10;
+
     var outer = d3.select(".view_container").append("svg")
         .attr("width", width).attr("height", height)
         .attr("pointer-events", "all");
@@ -92,26 +110,27 @@ function appCtrl($scope, $http)
             .attr("class", "group")
             .style("fill", function (d, i) { return color(i); });
 
-        var pad = 10;
+        
         var node = nodesLayer.selectAll(".node")
             .data(viewgraph.nodes)
             .enter().append("rect")
-            .attr("width", function (d) { return d.width - 2 * pad; })
-            .attr("height", function (d) { return d.height - 2 * pad; })
+            .attr("width", function (d) { return d.width - 2 * cfg_pad; })
+            .attr("height", function (d) { return d.height - 2 * cfg_pad; })
             .attr("rx", 5).attr("ry", 5)
             .style("fill", function (d) { return color(viewgraph.groups.length); })
+            .on("mouseover", function (d) { detail(d.category_id+'/'+d.name); })
             .call(cola.drag);
 
         var label = nodesLayer.selectAll(".label")
             .data(viewgraph.nodes)
             .enter().append("text")
             .attr("class", "label")
-            .text(function (d) { return d.label; })
-            .on("mouseover", function () { console.log('display detail'); })
             .call(cola.drag);
 
-        node.append("title")
-            .text(function (d) { return d.name; });
+        var lable1 = label.append('tspan')
+            .text((d) => { return d.label.substr(0, cfg_max_line_word); });
+        var label2 = label.append('tspan')
+            .text((d) => { return d.label.substr(cfg_max_line_word); });
 
         cola.on("tick", function () {
             link.attr("x1", function (d) { return d.source.x; })
@@ -122,17 +141,20 @@ function appCtrl($scope, $http)
             group
                 .attr("x", function (d) { return d.bounds.x; })
                 .attr("y", function (d) { return d.bounds.y; })
-                .attr("width", function (d) { return d.bounds.width(); })
-                .attr("height", function (d) { return d.bounds.height(); });
+                .attr("width", function (d) { return d.bounds.width() - 10; })
+                .attr("height", function (d) { return d.bounds.height() - 10; });
 
-            label
-                .attr("x", function (d) { return d.x; })
+            lable1
+                .attr("x", function (d) { return d.x - cfg_pad + 5; })
+                .attr("y", function (d) { return d.y; });
+            label2
+                .attr("x", function (d) { return d.x - cfg_pad + 5; })
                 .attr("y", function (d) {
                     var h = this.getBBox().height;
-                    return d.y + 20;
+                    return d.y + h;
                 });
 
-            node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+            node.attr("transform", function (d) { return "translate(" + (d.x - cfg_pad) + "," + (d.y - d.height / 2 + cfg_pad) + ")"; });
         });
     }
 
@@ -145,9 +167,26 @@ function appCtrl($scope, $http)
 
         modelgraph = res.data.message;
 
+        function text_width(txt)
+        {
+            let len = txt.length;
+            let len_en = 0, len_zh = 0;
+            for (x in txt)
+                if (txt[x].charCodeAt(0)>256)
+                    len_zh++;
+            
+            len_en = len - len_zh;
+            
+            return 12 + len_en * 8 + len_zh * 15;
+        }
+
         viewgraph['nodes'] = modelgraph['nodes'].map((x, idx) => {
-            x['width'] = 20 + 16 * x.label.length; 
-            x['height'] = 45; 
+            let txt = x.label;
+            let txt1 = txt.substr(0, cfg_max_line_word), txt2 = txt.substr(cfg_max_line_word);
+            let w1 = text_width(txt1);
+            let w2 = text_width(txt2);
+            x['width'] = Math.max(w1, w2) + cfg_pad; 
+            x['height'] = 60 + cfg_pad; 
             return x;
         });
         viewgraph['groups'] = modelgraph['groups'];
