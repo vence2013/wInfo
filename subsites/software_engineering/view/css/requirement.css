@@ -11,7 +11,8 @@
 .i1 { color: #ff0000; }
 .i3 { color: #888888; }
 
-.req_list>div { line-height: 25px; border-bottom: 1px dashed #dedede; }
+.req_list { overflow: auto; }
+.req_list>div { display: inline; float: left; margin-left: 30px; line-height: 25px; border-bottom: 1px dashed #dedede; }
 .req_list>div>span { margin-right: 5px; }
 .req_list>div>a { cursor: pointer; margin-left: 5px; }
 .req_list>div>a:active { color: #ff0000; }
@@ -29,7 +30,7 @@
 .link  { stroke: #7a4e4e; stroke-width: 3px; stroke-opacity: 1; }
 .label { cursor: move; }
 
-.label { width: 30px; height: 100px; }
+.label { width: 30px; height: 100px; font-size: 12px; }
 
 .detail { 
     position: fixed; bottom: 10px; left: 10px; 
@@ -41,3 +42,5 @@
 .detail>div { margin: 5px 10px; }
 .detail>div:not(:last-child) { border-bottom: 1px dashed #cccccc; }
 .detail>div:nth-child(1)>span { margin-left: 10px; }
+
+.detail>div>p { margin-bottom: 5px; }

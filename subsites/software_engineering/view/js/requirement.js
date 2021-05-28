@@ -141,17 +141,17 @@ function appCtrl($scope, $http)
             group
                 .attr("x", function (d) { return d.bounds.x; })
                 .attr("y", function (d) { return d.bounds.y; })
-                .attr("width", function (d) { return d.bounds.width() - 10; })
-                .attr("height", function (d) { return d.bounds.height() - 10; });
+                .attr("width", function (d) { return d.bounds.width() + 30; })
+                .attr("height", function (d) { return d.bounds.height() - 5; });
 
             lable1
                 .attr("x", function (d) { return d.x - cfg_pad + 5; })
-                .attr("y", function (d) { return d.y; });
+                .attr("y", function (d) { return d.y - 5; });
             label2
                 .attr("x", function (d) { return d.x - cfg_pad + 5; })
                 .attr("y", function (d) {
                     var h = this.getBBox().height;
-                    return d.y + h;
+                    return d.y + h - 5;
                 });
 
             node.attr("transform", function (d) { return "translate(" + (d.x - cfg_pad) + "," + (d.y - d.height / 2 + cfg_pad) + ")"; });
@@ -177,7 +177,7 @@ function appCtrl($scope, $http)
             
             len_en = len - len_zh;
             
-            return 12 + len_en * 8 + len_zh * 15;
+            return 12 + len_en * 7 + len_zh * 13;
         }
 
         viewgraph['nodes'] = modelgraph['nodes'].map((x, idx) => {
@@ -186,7 +186,7 @@ function appCtrl($scope, $http)
             let w1 = text_width(txt1);
             let w2 = text_width(txt2);
             x['width'] = Math.max(w1, w2) + cfg_pad; 
-            x['height'] = 60 + cfg_pad; 
+            x['height'] = 50 + cfg_pad; 
             return x;
         });
         viewgraph['groups'] = modelgraph['groups'];

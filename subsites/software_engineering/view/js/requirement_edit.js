@@ -189,7 +189,7 @@ function appCtrl($scope, $http)
         $scope.search['category'] = id_cat;
     }
 
-    $scope.search = {'category':0, 'ids':'', 'str':'', 'page':26};
+    $scope.search = {'category':0, 'ids':'', 'str':'', 'page':60};
     $scope.cat_title = '';
     function req_refresh()
     {

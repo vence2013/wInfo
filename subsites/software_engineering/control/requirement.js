@@ -259,7 +259,8 @@ exports.get_view_data = async (ctx, id_prj) =>
         for (let j = 0; j < arr.length; j++)
         {
             let idx = nodes_idx.indexOf(arr[j]);
-            links.push({'source':i, 'target':idx});
+            if (idx != -1)
+                links.push({'source':i, 'target':idx});
         }        
     }
 
