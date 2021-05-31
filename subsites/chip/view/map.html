@@ -15,8 +15,8 @@
 </head>
 <body ng-app="mapApp">
     <div ng-include="'/view/header.html'"></div>
-    <div ng-controller="mapCtrl" class="mt-2 mx-1" style="overflow-x: auto;">
-        <div style="width: calc(100% - 60px); overflow: auto;">
+    <div id="wrapper" ng-controller="mapCtrl" style="overflow-x: auto;">
+        <div class="mt-2 ml-2" style="width: calc(100% - 60px); overflow: auto;">
             <div class="map">
                 <div ng-repeat="x in reglist">
                     <!--- 寄存器 --->

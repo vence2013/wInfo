@@ -117,7 +117,8 @@ function appCtrl($scope, $http)
             .attr("width", function (d) { return d.width - 2 * cfg_pad; })
             .attr("height", function (d) { return d.height - 2 * cfg_pad; })
             .attr("rx", 5).attr("ry", 5)
-            .style("fill", function (d) { return color(viewgraph.groups.length); })
+            //.style("fill", function (d) { return color(viewgraph.groups.length); })
+            .style("fill", function (d) { return color(d['importance']*50); })
             .on("mouseover", function (d) { detail(d.category_id+'/'+d.name); })
             .call(cola.drag);
 
