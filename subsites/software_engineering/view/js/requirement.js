@@ -48,6 +48,11 @@ function appCtrl($scope, $http)
         }
     }
 
+    $scope.detail_close = () =>
+    {
+        $(".detail").css("display", 'none'); 
+    }
+
     $scope.req_detail = null;
     function detail(req_id)
     {
@@ -60,6 +65,7 @@ function appCtrl($scope, $http)
             $scope.req_detail = ret[0];
             $(".detail>.desc").html(ret[0]['desc']);
             $(".detail>.comment").html(ret[0]['comment']);
+            $(".detail").css("display", 'block');
         });
     }
 
@@ -110,15 +116,17 @@ function appCtrl($scope, $http)
             .attr("class", "group")
             .style("fill", function (d, i) { return color(i); });
 
-        
         var node = nodesLayer.selectAll(".node")
             .data(viewgraph.nodes)
             .enter().append("rect")
             .attr("width", function (d) { return d.width - 2 * cfg_pad; })
             .attr("height", function (d) { return d.height - 2 * cfg_pad; })
             .attr("rx", 5).attr("ry", 5)
-            //.style("fill", function (d) { return color(viewgraph.groups.length); })
-            .style("fill", function (d) { return color(d['importance']*50); })
+            .style("fill", function (d) { 
+                let color_map = [15, 20, 6];
+                let i = d['importance'] - 1;
+                return color(color_map[i]);   // 15, 25 6
+            })
             .on("mouseover", function (d) { detail(d.category_id+'/'+d.name); })
             .call(cola.drag);
 

@@ -62,13 +62,13 @@
                 <div class="tab-content pt-2">
                     <div class="tab-pane active resource_list" role="tabpanel" id="document">
                         <div ng-repeat="x in list_document" title="{{x.title}}" ng-mouseenter="rsel=x.id;" ng-mouseleave="rsel=null;">                            
-                            <a href="/document/display/{{x.id}}" target="_blank">{{x.title}}</a>
+                            <a href="/document/display/{{x.id}}" target="_blank" title="{{x.title}}">{{x.title|limitTo:54}}</a>
                             <img src="images/selected.png" ng-click="resource_link_document(x.id);" ng-show="rsel==x.id" />
                         </div>
                     </div>
                     <div class="tab-pane fade resource_list" role="tabpanel" id="file">
                         <div ng-repeat="x in list_file" title="{{x.name}}" ng-mouseenter="rsel=x.id;" ng-mouseleave="rsel=null;">                            
-                            <a href="{{x.location}}" target="_blank">{{x.name|limitTo:80}}</a>
+                            <a href="{{x.location}}" target="_blank" title="{{x.name}}">{{x.name|limitTo:54}}</a>
                             <img src="images/selected.png" ng-click="resource_link_file(x.id);" ng-show="rsel==x.id" />
                         </div>
                     </div>

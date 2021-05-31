@@ -36,11 +36,12 @@
         </div>
         <div class="view_container"></div>
 
-        <div class="detail" ng-show='req_detail'>
+        <div class="detail" style="display: none;">
             <div>
                 <span>{{req_detail.id}}</span>
                 <span>{{req_detail.importance}}</span>
                 <span>{{req_detail.sources}}</span>
+                <i class="fa fa-close float-right" ng-click="detail_close()"></i>
             </div>
             <div>{{req_detail.title}}</div>
             <div class="desc"></div>
