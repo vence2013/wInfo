@@ -152,6 +152,8 @@ function mapCtrl($scope, $http)
     $scope.reg_info_display = (reg) => {
         window.clearTimeout(info_close_timer);
 
+        if (!reg.id) return ;
+
         $(".map_info")
         .html('')
         .append("<div><span>寄存器：<b>"+reg.name+"</b></span><span>全称：<b>"+reg.fullname+"</b></span></div>")
