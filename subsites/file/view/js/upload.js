@@ -101,8 +101,10 @@ function uploadCtrl($scope, $http, FileUploader)
             // 取消标签到选中文件的关联
             if ($('.file_checkbox:eq('+i+')').prop('checked'))
             {
-                if (uploader.queue[i]['tags'])
+                var tags_inner = uploader.queue[i]['tags'];
+                if (tags_inner)
                 {
+                    console.log(tags_inner);
                     var idx = tags_inner.indexOf(name);
                     if (idx != -1) uploader.queue[i]['tags'].splice(idx, 1);
                 }
