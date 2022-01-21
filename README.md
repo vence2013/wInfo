@@ -17,3 +17,8 @@ jquery-notebook是一个新不错的选择。
 ~~~sql
 INSERT INTO `se_requirements` (`id`,`category_id`,`title`,`desc`,`comment`,`importance`,`sources`,`createdAt`,`updatedAt`) SELECT `id`,`seRequirementCategoryId`,`title`,`desc`,`comment`,`importance`,`sources`,`createdAt`,`updatedAt` FROM `se_requirements1`;
 ~~~
+
+~~~
+npm install -g bower
+bower install jquery-notebook
+~~~

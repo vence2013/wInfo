@@ -1,0 +1,14 @@
+{
+  "name": "wInfo",
+  "description": "document, file",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "https://github.com/vence2013/wInfo",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
